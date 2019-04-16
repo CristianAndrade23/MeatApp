@@ -20,7 +20,7 @@
       <table class="table">
         <tbody>
         <tr *ngFor="let item of items()">
-          <th>({{item.quantity}}x) {{item.menuItem.name}}</th>
+          <th>{{item.menuItem.name}} ({{item.quantity}}x)</th>
           <td class="text-right">{{item.value() | currency: 'BRL': true}}</td>
           <td class="text-right"><a (click)="removeItem(item)" class="btn btn-sm danger"><i class="fa fa-remove"></i></a></td>
         </tr>
