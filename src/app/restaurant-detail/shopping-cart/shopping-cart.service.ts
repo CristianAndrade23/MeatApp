@@ -12,9 +12,20 @@ export class ShoppingCartService {
   addItem(item: MenuItem) {
     let foundItem = this.itens.find(i => i.menuItem.id === item.id);
     if (foundItem){
-      foundItem.quantity = foundItem.quantity + 1;
+      this.incrementaQtd(foundItem)
     } else {
       this.itens.push(new CartItem(item));
+    }
+  }
+
+  incrementaQtd(item: CartItem){
+    item.quantity = item.quantity + 1;
+  }
+
+  decrementaQtd(item: CartItem){
+    item.quantity = item.quantity - 1;
+    if (item.quantity === 0){
+      this.removeItem(item);
     }
   }
 
