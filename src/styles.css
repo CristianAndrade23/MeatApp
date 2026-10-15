@@ -1,0 +1,406 @@
+/* Estilos globais do Meat (substituem o AdminLTE 2 / Bootstrap 3 da versão original). */
+
+:root {
+  --brand: #dd4b39;
+  --brand-dark: #c23321;
+  --success: #00a65a;
+  --success-dark: #008d4c;
+  --primary: #3c8dbc;
+  --primary-dark: #367fa9;
+  --star: #f39c12;
+
+  --bg: #ecf0f5;
+  --surface: #ffffff;
+  --surface-muted: #f9f9f9;
+  --text: #444;
+  --text-muted: #777;
+  --border: #e5e5e5;
+  --border-strong: #b5b5b5;
+  --snackbar-bg: #323232;
+
+  font-family: 'Source Sans 3', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+mt-root {
+  display: contents;
+}
+
+a {
+  color: var(--primary);
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* Layout */
+
+.container {
+  width: 100%;
+  max-width: 1170px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.content-wrapper {
+  flex: 1;
+  padding-bottom: 2rem;
+}
+
+.page-title {
+  font-size: 1.6rem;
+  margin: 1.5rem 0 1rem;
+}
+
+.main-footer {
+  background: var(--surface);
+  border-top: 1px solid #d2d6de;
+  padding: 1rem 0;
+  color: var(--text);
+}
+
+.main-footer .container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.grid-2 {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 30rem), 1fr));
+}
+
+/* Box */
+
+.box {
+  background: var(--surface);
+  border-radius: 3px;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.1);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.box-header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+
+.box-title {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.lead p,
+.box.lead {
+  font-size: 1.1rem;
+}
+
+/* Info box: cards de restaurante e itens do cardápio */
+
+.info-box {
+  display: flex;
+  min-height: 120px;
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 3px;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.1);
+  text-decoration: none;
+  overflow: hidden;
+  transition: box-shadow 0.15s;
+}
+
+a.info-box:hover {
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.15);
+}
+
+mt-menu-item {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.info-box-icon {
+  flex: 0 0 120px;
+  display: flex;
+  align-items: center;
+}
+
+.info-box-icon img {
+  display: block;
+  width: 120px;
+  height: auto;
+}
+
+.info-box-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0.4rem 0.75rem;
+}
+
+.info-box-header {
+  display: flex;
+  width: 100%;
+  gap: 0.5rem;
+}
+
+.info-box-title {
+  font-size: 1.15rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 0.6rem;
+}
+
+.info-box-header .info-box-title {
+  flex: 1;
+}
+
+.info-box-star {
+  font-size: 1.15rem;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.info-box-detail {
+  display: block;
+  font-size: 0.95rem;
+  margin-bottom: 0.3rem;
+}
+
+/* Botões */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 0.45rem 0.9rem;
+  font: inherit;
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-lg {
+  font-size: 1.25rem;
+  padding: 0.65rem 1.25rem;
+}
+
+.btn-primary {
+  background: var(--primary);
+}
+.btn-primary:not(:disabled):hover {
+  background: var(--primary-dark);
+}
+
+.btn-success {
+  background: var(--success);
+}
+.btn-success:not(:disabled):hover {
+  background: var(--success-dark);
+}
+
+.btn-danger {
+  background: var(--brand);
+}
+.btn-danger:not(:disabled):hover {
+  background: var(--brand-dark);
+}
+
+.link-button,
+.icon-button {
+  background: none;
+  border: 0;
+  padding: 0.25rem 0.4rem;
+  font: inherit;
+  color: var(--primary);
+  cursor: pointer;
+}
+
+.icon-button {
+  color: var(--text);
+}
+
+.danger,
+.icon-button.danger {
+  color: var(--brand);
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Tabelas */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 0.5rem;
+  border-top: 1px solid var(--border);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.table thead th {
+  border-top: 0;
+  border-bottom: 2px solid var(--border);
+}
+
+.table tbody tr:first-child th,
+.table tbody tr:first-child td {
+  border-top: 0;
+}
+
+.table-striped tbody tr:nth-child(odd) {
+  background: var(--surface-muted);
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.text-right,
+.table .text-right {
+  text-align: right;
+}
+
+.text-center,
+.table .text-center {
+  text-align: center;
+}
+
+/* Formulários */
+
+.form-group {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.control-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  padding: 0.45rem 0.75rem;
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid #d2d6de;
+  border-radius: 0;
+  transition: border-color 0.15s;
+}
+
+.form-control:focus {
+  border-color: var(--primary);
+  outline: none;
+}
+
+.help-block {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.9rem;
+}
+
+.has-success .form-control {
+  border-color: var(--success);
+}
+.has-success .help-block,
+.has-success .control-label {
+  color: var(--success);
+}
+
+.has-error .form-control {
+  border-color: var(--brand);
+}
+.has-error .help-block,
+.has-error .control-label,
+.has-error.help-block {
+  color: var(--brand);
+}
+
+/* Utilitários */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Animações (usadas com animate.enter) */
+
+.fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

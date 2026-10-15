@@ -1,0 +1,66 @@
+<section class="box invoice">
+  <h1 class="page-header"><i class="fa-solid fa-cart-shopping"></i> Finalize o seu pedido</h1>
+
+  <form [formRoot]="orderForm">
+    <fieldset>
+      <legend class="lead">Endereço de Entrega:</legend>
+      <div class="address-grid">
+        <mt-input-container class="address" [field]="orderForm.address" label="Endereço" for="address">
+          <input id="address" class="form-control" placeholder="Rua, avenida..." autocomplete="street-address"
+                 [formField]="orderForm.address" />
+        </mt-input-container>
+
+        <mt-input-container [field]="orderForm.number" label="Número" for="number">
+          <input id="number" class="form-control" inputmode="numeric" placeholder="Número" autocomplete="off"
+                 [formField]="orderForm.number" />
+        </mt-input-container>
+
+        <mt-input-container [field]="orderForm.optionalAddress" label="Complemento" for="optionalAddress">
+          <input id="optionalAddress" class="form-control" placeholder="Apto, bloco..." autocomplete="off"
+                 [formField]="orderForm.optionalAddress" />
+        </mt-input-container>
+      </div>
+    </fieldset>
+
+    <section>
+      <h2 class="lead">Itens do Pedido:</h2>
+      <mt-order-items
+        [items]="cart.items()"
+        (increase)="cart.increase($event)"
+        (decrease)="cart.decrease($event)"
+        (remove)="cart.remove($event)"
+      />
+    </section>
+
+    <div class="grid grid-2">
+      <fieldset>
+        <legend class="lead">Formas de Pagamento:</legend>
+        <mt-radio [options]="paymentOptions" [formField]="orderForm.paymentOption" />
+        @if (orderForm.paymentOption().touched() && orderForm.paymentOption().invalid()) {
+          <p class="has-error help-block" role="alert">
+            <i class="fa-solid fa-xmark"></i> {{ orderForm.paymentOption().errors()[0].message }}
+          </p>
+        }
+      </fieldset>
+
+      <section>
+        <h2 class="lead">Frete e Total:</h2>
+        <mt-delivery-costs [delivery]="delivery" [itemsValue]="cart.total()" />
+      </section>
+    </div>
+
+    <div class="form-actions">
+      <button
+        type="submit"
+        class="btn btn-success"
+        [disabled]="orderForm().invalid() || cart.isEmpty() || orderForm().submitting()"
+      >
+        @if (orderForm().submitting()) {
+          <i class="fa-solid fa-spinner fa-spin"></i> Enviando...
+        } @else {
+          <i class="fa-solid fa-credit-card"></i> Concluir Pedido
+        }
+      </button>
+    </div>
+  </form>
+</section>

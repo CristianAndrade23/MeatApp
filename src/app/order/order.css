@@ -1,0 +1,51 @@
+.invoice {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+}
+
+.page-header {
+  font-size: 1.6rem;
+  margin: 0 0 1.25rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+
+fieldset {
+  border: 0;
+  margin: 0 0 1rem;
+  padding: 0;
+  min-width: 0;
+}
+
+.lead {
+  font-size: 1.15rem;
+  font-weight: 300;
+  margin: 0 0 0.75rem;
+  padding: 0;
+}
+
+form > section {
+  margin-bottom: 1.5rem;
+}
+
+.address-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 0 1rem;
+}
+
+@media (max-width: 767px) {
+  .address-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .address {
+    grid-column: 1 / -1;
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
