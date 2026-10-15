@@ -370,5 +370,17 @@
       "restaurantId": "tasty-treats"
     }
   ],
-  "orders": []
+  "orders": [],
+  "users": [
+    {
+      "name": "Juliana",
+      "email": "juliana@gmail.com",
+      "passwordHash": "scrypt$f994ca4d97fa396f092cdfe9a852dbaf$0f76725712257735bd228b3e6f4d6a9e96ef57ac23b9da42a9d2f7974b5276d8"
+    },
+    {
+      "name": "Amanda",
+      "email": "amanda@gmail.com",
+      "passwordHash": "scrypt$1602b7cfb2972587256aab1891da7f0a$5e4e8d9cefec05e9da613fe3a016b313b34bb3b78cfbec10985dbf10c1ccc4f0"
+    }
+  ]
 }
