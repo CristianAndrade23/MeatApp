@@ -11,24 +11,44 @@ import { MenuItem } from '../core/models';
       <div class="info-box-content">
         <h3 class="info-box-title">{{ menuItem().name }}</h3>
         <p class="info-box-detail">{{ menuItem().description }}</p>
-        <span class="price">{{ menuItem().price | currency }}</span>
-        <button type="button" class="link-button" (click)="add.emit(menuItem())">
-          <i class="fa-solid fa-circle-plus"></i> Adicionar
-        </button>
+        <div class="item-footer">
+          <span class="price">{{ menuItem().price | currency }}</span>
+          <button
+            type="button"
+            class="btn btn-outline btn-sm"
+            [attr.aria-label]="'Adicionar ' + menuItem().name + ' à sacola'"
+            (click)="add.emit(menuItem())"
+          >
+            <i class="fa-solid fa-plus"></i> Adicionar
+          </button>
+        </div>
       </div>
     </article>
   `,
   styles: `
     .info-box-title {
       margin: 0 0 0.5rem;
+      max-width: 100%;
+      white-space: normal;
     }
     .info-box-detail {
       margin: 0 0 1rem;
     }
+    .item-footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      width: 100%;
+      margin-top: auto;
+    }
     .price {
       font-weight: bold;
-      font-size: 1rem;
-      margin-right: 1.25rem;
+      font-size: 1.1rem;
+    }
+    .btn-sm {
+      padding: 0.45rem 1rem;
     }
   `,
 })
