@@ -15,7 +15,7 @@ import { RouterLink } from '@angular/router';
     .not-found {
       text-align: center;
       padding: 3rem 1rem;
-      margin-top: 1.5rem;
+      margin-top: 2rem;
     }
     img {
       max-width: 60%;

@@ -16,7 +16,7 @@ import { CartItem, cartItemValue } from '../core/models';
             <tr>
               <th class="text-center">Quantidade</th>
               <th>Item</th>
-              <th class="hide-xs">Descrição</th>
+              <th>Descrição</th>
               <th class="text-right">Subtotal</th>
               <th><span class="sr-only">Ações</span></th>
             </tr>
@@ -33,10 +33,10 @@ import { CartItem, cartItemValue } from '../core/models';
                     <i class="fa-solid fa-plus"></i>
                   </button>
                 </td>
-                <td>{{ item.menuItem.name }}</td>
-                <td class="hide-xs">{{ item.menuItem.description }}</td>
-                <td class="text-right">{{ itemValue(item) | currency }}</td>
-                <td class="text-right">
+                <td class="name">{{ item.menuItem.name }}</td>
+                <td class="description">{{ item.menuItem.description }}</td>
+                <td class="text-right value">{{ itemValue(item) | currency }}</td>
+                <td class="text-right remove">
                   <button
                     type="button"
                     class="icon-button danger"
@@ -57,9 +57,44 @@ import { CartItem, cartItemValue } from '../core/models';
     .qty {
       white-space: nowrap;
     }
+    .qty .icon-button {
+      padding: 0.35rem 0.6rem;
+    }
+    /* No celular cada item vira um card: nome e valor em cima, quantidade embaixo. */
     @media (max-width: 575px) {
-      .hide-xs {
+      thead,
+      .description {
         display: none;
+      }
+      tr {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto auto;
+        align-items: center;
+        padding: 0.75rem 0;
+      }
+      tr + tr {
+        border-top: 1px solid var(--border);
+      }
+      .table td {
+        border: 0;
+        padding: 0.25rem 0.5rem;
+      }
+      .name {
+        grid-area: 1 / 1;
+        font-weight: 600;
+      }
+      .value {
+        grid-area: 1 / 2;
+      }
+      .remove {
+        grid-area: 1 / 3 / span 2;
+      }
+      .table .qty {
+        grid-area: 2 / 1;
+        text-align: left;
+      }
+      .qty .icon-button:first-child {
+        padding-left: 0;
       }
     }
   `,

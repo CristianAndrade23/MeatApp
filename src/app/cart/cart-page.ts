@@ -23,12 +23,12 @@ import { CartStore } from './cart.store';
         <header class="bag-header">
           <h1 class="page-header"><i class="fa-solid fa-bag-shopping"></i> Sua sacola</h1>
           @if (restaurant.value(); as r) {
-            <p class="restaurant">
-              <i class="fa-solid fa-store"></i> {{ r.name }}
-              <a [routerLink]="['/restaurants', r.id, 'menu']">
+            <div class="restaurant">
+              <span class="restaurant-name"><i class="fa-solid fa-store"></i> {{ r.name }}</span>
+              <a class="btn btn-outline" [routerLink]="['/restaurants', r.id, 'menu']">
                 <i class="fa-solid fa-plus"></i> Adicionar mais itens
               </a>
-            </p>
+            </div>
           }
         </header>
 
@@ -39,11 +39,15 @@ import { CartStore } from './cart.store';
           (remove)="cart.remove($event)"
         />
 
-        <div class="subtotal">
-          <span>Subtotal</span>
-          <strong>{{ cart.total() | currency }}</strong>
+        <div class="totals">
+          <div class="subtotal">
+            <span>Subtotal</span>
+            <strong>{{ cart.total() | currency }}</strong>
+          </div>
+          <p class="hint">
+            <i class="fa-solid fa-circle-info"></i> Frete e forma de pagamento são escolhidos na próxima etapa.
+          </p>
         </div>
-        <p class="hint">Frete e forma de pagamento são escolhidos na próxima etapa.</p>
 
         <footer class="actions">
           <button type="button" class="btn btn-default" (click)="clear()">
@@ -59,8 +63,8 @@ import { CartStore } from './cart.store';
   styles: `
     .bag,
     .empty {
-      margin-top: 1.5rem;
-      padding: 1.25rem;
+      margin-top: 2rem;
+      padding: 1.75rem 2rem;
     }
     .empty {
       text-align: center;
@@ -72,43 +76,63 @@ import { CartStore } from './cart.store';
     }
     .page-header {
       font-size: 1.6rem;
-      margin: 0 0 0.5rem;
+      margin: 0 0 1.25rem;
     }
     .bag-header {
-      padding-bottom: 0.75rem;
-      margin-bottom: 0.75rem;
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.25rem;
       border-bottom: 1px solid var(--border);
     }
     .restaurant {
       display: flex;
       flex-wrap: wrap;
-      align-items: baseline;
-      gap: 0.4rem 1rem;
-      margin: 0;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem 1.5rem;
+    }
+    .restaurant-name {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 1.1rem;
       font-weight: 600;
     }
-    .restaurant a {
-      font-weight: normal;
+    .totals {
+      margin-top: 1.25rem;
+      padding: 1.25rem 1rem;
+      border-radius: 6px;
+      background: var(--surface-muted);
     }
     .subtotal {
       display: flex;
       justify-content: space-between;
-      font-size: 1.2rem;
-      padding: 0.75rem 0.5rem 0;
+      align-items: baseline;
+      font-size: 1.25rem;
     }
     .hint {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
       color: var(--text-muted);
-      text-align: right;
-      margin: 0.25rem 0.5rem 0;
+      margin: 0.75rem 0 0;
     }
     .actions {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
-      gap: 0.5rem;
-      margin-top: 1.25rem;
-      padding-top: 1rem;
+      gap: 0.75rem;
+      margin-top: 1.75rem;
+      padding-top: 1.5rem;
       border-top: 1px solid var(--border);
+    }
+    @media (max-width: 575px) {
+      .bag {
+        padding: 1.25rem 1rem;
+      }
+      .restaurant .btn,
+      .actions .btn {
+        flex: 1 1 100%;
+      }
     }
   `,
 })

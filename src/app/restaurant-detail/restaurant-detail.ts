@@ -41,7 +41,7 @@ import { API_URL, Restaurant } from '../core/models';
   `,
   styles: `
     .detail {
-      margin-top: 1.5rem;
+      margin-top: 2rem;
     }
     .box-header {
       display: flex;
@@ -71,17 +71,17 @@ import { API_URL, Restaurant } from '../core/models';
       font-weight: bold;
     }
     dd {
-      margin: 0 0 0.75rem;
+      margin: 0 0 1rem;
     }
     .detail-tabs {
       display: flex;
-      margin: 0 -1rem -1rem;
+      margin: 0.5rem -1.5rem -1.5rem;
       border-top: 1px solid var(--border);
     }
     .detail-tabs a {
       flex: 1;
       text-align: center;
-      padding: 0.7rem;
+      padding: 0.95rem;
       color: var(--text);
       font-size: 1.05rem;
       text-decoration: none;

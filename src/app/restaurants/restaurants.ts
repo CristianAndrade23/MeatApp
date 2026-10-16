@@ -43,8 +43,8 @@ import { RestaurantCard } from './restaurant-card';
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
-      margin-bottom: 1rem;
+      gap: 1.25rem;
+      margin: 2rem 0 1.5rem;
     }
     .page-title {
       margin: 0;

@@ -68,7 +68,7 @@ import { OrderService } from './order.service';
     .summary {
       text-align: center;
       padding: 2.5rem 1rem;
-      margin-top: 1.5rem;
+      margin-top: 2rem;
     }
     .success-icon {
       font-size: 3.5rem;

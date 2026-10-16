@@ -28,8 +28,8 @@ import { MenuItemCard } from './menu-item';
   styles: `
     .menu-layout {
       display: grid;
-      grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
-      gap: 1rem;
+      grid-template-columns: minmax(0, 1fr) 20rem;
+      gap: 1.5rem;
       align-items: start;
     }
     aside {

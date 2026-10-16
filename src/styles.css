@@ -69,18 +69,18 @@ img {
 
 .content-wrapper {
   flex: 1;
-  padding-bottom: 2rem;
+  padding-bottom: 3rem;
 }
 
 .page-title {
   font-size: 1.6rem;
-  margin: 1.5rem 0 1rem;
+  margin: 2rem 0 1.5rem;
 }
 
 .main-footer {
   background: var(--surface);
   border-top: 1px solid #d2d6de;
-  padding: 1rem 0;
+  padding: 1.5rem 0;
   color: var(--text);
 }
 
@@ -93,7 +93,12 @@ img {
 
 .grid {
   display: grid;
-  gap: 1rem;
+  gap: 1.5rem;
+}
+
+/* Dentro de um grid o espaçamento vem do gap, não da margem do box. */
+.grid > .box {
+  margin-bottom: 0;
 }
 
 .grid-2 {
@@ -104,16 +109,16 @@ img {
 
 .box {
   background: var(--surface);
-  border-radius: 3px;
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.1);
-  padding: 1rem;
-  margin-bottom: 1rem;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .box-header {
   border-bottom: 1px solid var(--border);
-  padding-bottom: 0.6rem;
-  margin-bottom: 0.6rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .box-title {
@@ -133,8 +138,8 @@ img {
   min-height: 120px;
   background: var(--surface);
   color: var(--text);
-  border-radius: 3px;
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.1);
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
   text-decoration: none;
   overflow: hidden;
   transition: box-shadow 0.15s;
@@ -146,13 +151,14 @@ a.info-box:hover {
 
 mt-menu-item {
   display: block;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 
 .info-box-icon {
   flex: 0 0 120px;
   display: flex;
   align-items: center;
+  padding: 0.5rem;
 }
 
 .info-box-icon img {
@@ -167,7 +173,7 @@ mt-menu-item {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 0.4rem 0.75rem;
+  padding: 1rem 1.25rem;
 }
 
 .info-box-header {
@@ -183,7 +189,7 @@ mt-menu-item {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.75rem;
 }
 
 .info-box-header .info-box-title {
@@ -199,7 +205,7 @@ mt-menu-item {
 .info-box-detail {
   display: block;
   font-size: 0.95rem;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.4rem;
 }
 
 /* Botões */
@@ -210,8 +216,8 @@ mt-menu-item {
   justify-content: center;
   gap: 0.4rem;
   border: 1px solid transparent;
-  border-radius: 3px;
-  padding: 0.45rem 0.9rem;
+  border-radius: 4px;
+  padding: 0.6rem 1.1rem;
   font: inherit;
   color: #fff;
   text-decoration: none;
@@ -243,6 +249,16 @@ mt-menu-item {
 }
 .btn-default:not(:disabled):hover {
   background: #e7e7e7;
+}
+
+.btn-outline {
+  background: var(--surface);
+  border-color: var(--brand);
+  color: var(--brand);
+  font-weight: 600;
+}
+.btn-outline:not(:disabled):hover {
+  background: var(--brand-soft);
 }
 
 .btn-success {
@@ -292,7 +308,7 @@ mt-menu-item {
 
 .table th,
 .table td {
-  padding: 0.5rem;
+  padding: 0.85rem 0.75rem;
   border-top: 1px solid var(--border);
   text-align: left;
   vertical-align: middle;
@@ -330,24 +346,24 @@ mt-menu-item {
 
 .form-group {
   display: block;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 
 .control-label {
   display: block;
   font-weight: 600;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.45rem;
 }
 
 .form-control {
   display: block;
   width: 100%;
-  padding: 0.45rem 0.75rem;
+  padding: 0.6rem 0.85rem;
   font: inherit;
   color: var(--text);
   background: var(--surface);
   border: 1px solid #d2d6de;
-  border-radius: 0;
+  border-radius: 4px;
   transition: border-color 0.15s;
 }
 
@@ -358,7 +374,7 @@ mt-menu-item {
 
 .help-block {
   display: block;
-  margin-top: 0.3rem;
+  margin-top: 0.4rem;
   font-size: 0.9rem;
 }
 

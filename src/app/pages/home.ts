@@ -17,7 +17,7 @@ import { RouterLink } from '@angular/router';
       border-radius: 6px;
       text-align: center;
       padding: 4rem 1.5rem;
-      margin-top: 1.5rem;
+      margin-top: 2rem;
     }
     h1 {
       font-size: clamp(2rem, 6vw, 3.5rem);
