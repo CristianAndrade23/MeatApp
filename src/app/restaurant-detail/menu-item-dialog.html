@@ -1,0 +1,98 @@
+<header class="top-bar">
+  <span class="top-title">{{ menuItem().name }}</span>
+  <button type="button" class="close" aria-label="Fechar" (click)="dismissed.emit()">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</header>
+
+<!-- Recebe o foco ao abrir: permite rolar pelo teclado sem destacar o botão de fechar. -->
+<div class="scroll" tabindex="-1" autofocus>
+  <div class="hero">
+    <img [src]="menuItem().imagePath" alt="" />
+  </div>
+
+  <div class="intro">
+    <h2 id="item-dialog-title">{{ menuItem().name }}</h2>
+    <p class="description">{{ menuItem().description }}</p>
+    <p class="price">{{ menuItem().price | currency }}</p>
+  </div>
+
+  @for (g of groups(); track g.group.id) {
+    <section class="group" [id]="'group-' + g.group.id" [attr.aria-labelledby]="'group-title-' + g.group.id">
+      <header class="group-header" [class.missing]="attempted() && !g.satisfied">
+        <div>
+          <h3 [id]="'group-title-' + g.group.id">{{ g.group.name }}</h3>
+          @if (attempted() && !g.satisfied) {
+            <span class="rule missing-text" role="alert">
+              <i class="fa-solid fa-circle-exclamation"></i> Escolha uma opção para continuar
+            </span>
+          } @else {
+            <span class="rule">{{ g.rule }}</span>
+          }
+        </div>
+        @if (g.required) {
+          @if (g.satisfied) {
+            <span class="badge done"><i class="fa-solid fa-check"></i></span>
+          } @else {
+            <span class="badge required">Obrigatório</span>
+          }
+        } @else {
+          <span class="badge counter">{{ g.count }}/{{ g.group.max }}</span>
+        }
+      </header>
+
+      <ul class="options">
+        @for (option of g.group.options; track option.id) {
+          <li>
+            <label class="option" [class.disabled]="!isSelected(g.group, option) && g.full && !g.single && g.group.max > 1">
+              <span class="option-text">
+                <span class="option-name">{{ option.name }}</span>
+                @if (option.price > 0) {
+                  <span class="option-price">+ {{ option.price | currency }}</span>
+                }
+              </span>
+              <input
+                [type]="g.single ? 'radio' : 'checkbox'"
+                [name]="menuItem().id + '-' + g.group.id"
+                [checked]="isSelected(g.group, option)"
+                [disabled]="!isSelected(g.group, option) && g.full && g.group.max > 1"
+                (change)="toggle(g.group, option)"
+              />
+            </label>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  <section class="note">
+    <label for="item-note">
+      <span><i class="fa-regular fa-comment"></i> Alguma observação?</span>
+      <span class="counter">{{ note().length }}/{{ maxNote }}</span>
+    </label>
+    <textarea
+      id="item-note"
+      rows="3"
+      [attr.maxlength]="maxNote"
+      placeholder="Ex.: tirar a cebola, maionese à parte etc."
+      [value]="note()"
+      (input)="note.set($any($event.target).value)"
+    ></textarea>
+  </section>
+</div>
+
+<footer class="dialog-footer">
+  <div class="quantity" role="group" aria-label="Quantidade">
+    <button type="button" aria-label="Diminuir quantidade" [disabled]="quantity() <= 1" (click)="changeQuantity(-1)">
+      <i class="fa-solid fa-minus"></i>
+    </button>
+    <span aria-live="polite">{{ quantity() }}</span>
+    <button type="button" aria-label="Aumentar quantidade" [disabled]="quantity() >= 99" (click)="changeQuantity(1)">
+      <i class="fa-solid fa-plus"></i>
+    </button>
+  </div>
+  <button type="button" class="btn btn-danger add" (click)="submit()">
+    <span>Adicionar</span>
+    <span>{{ total() | currency }}</span>
+  </button>
+</footer>

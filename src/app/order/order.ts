@@ -25,6 +25,7 @@ import { firstValueFrom } from 'rxjs';
 import { CartStore } from '../cart/cart.store';
 import {
   API_URL,
+  cartItemDetails,
   cartItemValue,
   DELIVERY_FEE,
   DeliveryType,
@@ -263,6 +264,7 @@ export class Order {
   });
 
   protected readonly itemValue = cartItemValue;
+  protected readonly details = cartItemDetails;
 
   // --- Envio --------------------------------------------------------------------------------
 
@@ -292,7 +294,14 @@ export class Order {
         ...(changeFor ? { changeFor } : {}),
         ...(card ? { card } : {}),
       },
-      orderItems: this.cart.items().map((i) => ({ menuId: i.menuItem.id, quantity: i.quantity })),
+      orderItems: this.cart.items().map((i) => ({
+        menuId: i.menuItem.id,
+        quantity: i.quantity,
+        ...(i.options.length
+          ? { options: i.options.map(({ groupId, optionId }) => ({ groupId, optionId })) }
+          : {}),
+        ...(i.note ? { note: i.note } : {}),
+      })),
     };
   }
 

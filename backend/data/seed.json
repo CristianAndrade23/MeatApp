@@ -74,7 +74,27 @@
       "name": "Cup Cake",
       "description": "Cup Cake recheado de Doce de Leite",
       "price": 8.7,
-      "restaurantId": "bread-bakery"
+      "restaurantId": "bread-bakery",
+      "options": [
+        {
+          "id": "cobertura-extra",
+          "name": "Cobertura extra",
+          "min": 0,
+          "max": 1,
+          "options": [
+            {
+              "id": "granulado",
+              "name": "Granulado",
+              "price": 1
+            },
+            {
+              "id": "confeitos-coloridos",
+              "name": "Confeitos coloridos",
+              "price": 1.5
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "donut",
@@ -82,7 +102,32 @@
       "name": "Donut",
       "description": "Coberto com chantilly",
       "price": 2.5,
-      "restaurantId": "bread-bakery"
+      "restaurantId": "bread-bakery",
+      "options": [
+        {
+          "id": "recheio",
+          "name": "Recheio",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "doce-de-leite",
+              "name": "Doce de leite",
+              "price": 0
+            },
+            {
+              "id": "chocolate",
+              "name": "Chocolate",
+              "price": 0
+            },
+            {
+              "id": "morango",
+              "name": "Morango",
+              "price": 0
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "bread",
@@ -98,7 +143,60 @@
       "name": "Classic Burger",
       "description": "O clássico. Não tem como errar.",
       "price": 18.5,
-      "restaurantId": "burger-house"
+      "restaurantId": "burger-house",
+      "options": [
+        {
+          "id": "ponto-da-carne",
+          "name": "Ponto da carne",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "mal-passado",
+              "name": "Mal passado",
+              "price": 0
+            },
+            {
+              "id": "ao-ponto",
+              "name": "Ao ponto",
+              "price": 0
+            },
+            {
+              "id": "bem-passado",
+              "name": "Bem passado",
+              "price": 0
+            }
+          ]
+        },
+        {
+          "id": "adicionais",
+          "name": "Adicionais",
+          "min": 0,
+          "max": 3,
+          "options": [
+            {
+              "id": "bacon",
+              "name": "Bacon",
+              "price": 4
+            },
+            {
+              "id": "queijo-extra",
+              "name": "Queijo extra",
+              "price": 3
+            },
+            {
+              "id": "ovo",
+              "name": "Ovo",
+              "price": 2.5
+            },
+            {
+              "id": "cebola-caramelizada",
+              "name": "Cebola caramelizada",
+              "price": 3
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "fries",
@@ -106,7 +204,55 @@
       "name": "Batatas Fritas",
       "description": "Batatas fritas crocantes",
       "price": 5.5,
-      "restaurantId": "burger-house"
+      "restaurantId": "burger-house",
+      "options": [
+        {
+          "id": "tamanho",
+          "name": "Tamanho",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "pequena",
+              "name": "Pequena",
+              "price": 0
+            },
+            {
+              "id": "media",
+              "name": "Média",
+              "price": 2
+            },
+            {
+              "id": "grande",
+              "name": "Grande",
+              "price": 4
+            }
+          ]
+        },
+        {
+          "id": "molhos",
+          "name": "Molhos",
+          "min": 0,
+          "max": 2,
+          "options": [
+            {
+              "id": "cheddar",
+              "name": "Cheddar",
+              "price": 3
+            },
+            {
+              "id": "barbecue",
+              "name": "Barbecue",
+              "price": 2
+            },
+            {
+              "id": "maionese-da-casa",
+              "name": "Maionese da casa",
+              "price": 2
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "coke.png",
@@ -114,7 +260,50 @@
       "name": "Refrigerante",
       "description": "O refri mais gelado da cidade.",
       "price": 4.5,
-      "restaurantId": "burger-house"
+      "restaurantId": "burger-house",
+      "options": [
+        {
+          "id": "sabor",
+          "name": "Sabor",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "coca-cola",
+              "name": "Coca-Cola",
+              "price": 0
+            },
+            {
+              "id": "guarana",
+              "name": "Guaraná",
+              "price": 0
+            },
+            {
+              "id": "laranja",
+              "name": "Laranja",
+              "price": 0
+            }
+          ]
+        },
+        {
+          "id": "gelo-e-limao",
+          "name": "Gelo e limão",
+          "min": 0,
+          "max": 2,
+          "options": [
+            {
+              "id": "com-gelo",
+              "name": "Com gelo",
+              "price": 0
+            },
+            {
+              "id": "com-limao",
+              "name": "Com limão",
+              "price": 0
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "capp",
@@ -122,7 +311,55 @@
       "name": "Cappuccino com Chantilly",
       "description": "Tradicional cappuccino com chantilly",
       "price": 9.9,
-      "restaurantId": "coffee-corner"
+      "restaurantId": "coffee-corner",
+      "options": [
+        {
+          "id": "tamanho",
+          "name": "Tamanho",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "pequeno",
+              "name": "Pequeno",
+              "price": 0
+            },
+            {
+              "id": "medio",
+              "name": "Médio",
+              "price": 3
+            },
+            {
+              "id": "grande",
+              "name": "Grande",
+              "price": 5
+            }
+          ]
+        },
+        {
+          "id": "leite",
+          "name": "Leite",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "integral",
+              "name": "Integral",
+              "price": 0
+            },
+            {
+              "id": "desnatado",
+              "name": "Desnatado",
+              "price": 0
+            },
+            {
+              "id": "vegetal",
+              "name": "Vegetal",
+              "price": 2
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "espreso",
@@ -130,7 +367,50 @@
       "name": "Super Espreso",
       "description": "Café espresso duplo. ",
       "price": 12.5,
-      "restaurantId": "coffee-corner"
+      "restaurantId": "coffee-corner",
+      "options": [
+        {
+          "id": "dose",
+          "name": "Dose",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "simples",
+              "name": "Simples",
+              "price": 0
+            },
+            {
+              "id": "dupla",
+              "name": "Dupla",
+              "price": 4.5
+            }
+          ]
+        },
+        {
+          "id": "acucar",
+          "name": "Açúcar",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "sem-acucar",
+              "name": "Sem açúcar",
+              "price": 0
+            },
+            {
+              "id": "acucar",
+              "name": "Açúcar",
+              "price": 0
+            },
+            {
+              "id": "adocante",
+              "name": "Adoçante",
+              "price": 0
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "starb",
@@ -138,7 +418,55 @@
       "name": "Starbucks Copycat",
       "description": "O mais pedido da casa. O verdadeiro café americano pura água.",
       "price": 15.6,
-      "restaurantId": "coffee-corner"
+      "restaurantId": "coffee-corner",
+      "options": [
+        {
+          "id": "tamanho",
+          "name": "Tamanho",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "pequeno",
+              "name": "Pequeno",
+              "price": 0
+            },
+            {
+              "id": "medio",
+              "name": "Médio",
+              "price": 3
+            },
+            {
+              "id": "grande",
+              "name": "Grande",
+              "price": 5
+            }
+          ]
+        },
+        {
+          "id": "adicionais",
+          "name": "Adicionais",
+          "min": 0,
+          "max": 2,
+          "options": [
+            {
+              "id": "chantilly-extra",
+              "name": "Chantilly extra",
+              "price": 2
+            },
+            {
+              "id": "calda-de-caramelo",
+              "name": "Calda de caramelo",
+              "price": 2.5
+            },
+            {
+              "id": "dose-extra-de-cafe",
+              "name": "Dose extra de café",
+              "price": 4
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "zlasagna",
@@ -146,7 +474,27 @@
       "name": "Lasagna de Zucchini",
       "description": "Lasagna deliciosa que se salva por causa do queijo",
       "price": 14.9,
-      "restaurantId": "green-food"
+      "restaurantId": "green-food",
+      "options": [
+        {
+          "id": "acompanhamentos",
+          "name": "Acompanhamentos",
+          "min": 0,
+          "max": 2,
+          "options": [
+            {
+              "id": "queijo-extra",
+              "name": "Queijo extra",
+              "price": 4
+            },
+            {
+              "id": "pao-de-alho",
+              "name": "Pão de alho",
+              "price": 5
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "greensandwich",
@@ -154,7 +502,55 @@
       "name": "Sanduíche de Frango",
       "description": "Frango grelhado e salada",
       "price": 10.5,
-      "restaurantId": "green-food"
+      "restaurantId": "green-food",
+      "options": [
+        {
+          "id": "pao",
+          "name": "Pão",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "integral",
+              "name": "Integral",
+              "price": 0
+            },
+            {
+              "id": "frances",
+              "name": "Francês",
+              "price": 0
+            },
+            {
+              "id": "sirio",
+              "name": "Sírio",
+              "price": 0
+            }
+          ]
+        },
+        {
+          "id": "adicionais",
+          "name": "Adicionais",
+          "min": 0,
+          "max": 3,
+          "options": [
+            {
+              "id": "bacon",
+              "name": "Bacon",
+              "price": 4
+            },
+            {
+              "id": "queijo",
+              "name": "Queijo",
+              "price": 3
+            },
+            {
+              "id": "abacate",
+              "name": "Abacate",
+              "price": 3.5
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "ceasar",
@@ -162,7 +558,55 @@
       "name": "Salada Ceasar",
       "description": "Clássica salada ceasar.",
       "price": 33.9,
-      "restaurantId": "green-food"
+      "restaurantId": "green-food",
+      "options": [
+        {
+          "id": "proteina",
+          "name": "Proteína",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "frango-grelhado",
+              "name": "Frango grelhado",
+              "price": 0
+            },
+            {
+              "id": "tofu",
+              "name": "Tofu",
+              "price": 0
+            },
+            {
+              "id": "camarao",
+              "name": "Camarão",
+              "price": 12
+            }
+          ]
+        },
+        {
+          "id": "molho",
+          "name": "Molho",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "caesar",
+              "name": "Caesar",
+              "price": 0
+            },
+            {
+              "id": "mostarda-e-mel",
+              "name": "Mostarda e mel",
+              "price": 0
+            },
+            {
+              "id": "sem-molho",
+              "name": "Sem molho",
+              "price": 0
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "sunday",
@@ -170,7 +614,60 @@
       "name": "Mega Sunday",
       "description": "Sunday com várias bolas de sorvete a sua escolha",
       "price": 21.5,
-      "restaurantId": "ice-cream"
+      "restaurantId": "ice-cream",
+      "options": [
+        {
+          "id": "calda",
+          "name": "Calda",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "chocolate",
+              "name": "Chocolate",
+              "price": 0
+            },
+            {
+              "id": "caramelo",
+              "name": "Caramelo",
+              "price": 0
+            },
+            {
+              "id": "morango",
+              "name": "Morango",
+              "price": 0
+            }
+          ]
+        },
+        {
+          "id": "coberturas",
+          "name": "Coberturas",
+          "min": 0,
+          "max": 3,
+          "options": [
+            {
+              "id": "castanhas",
+              "name": "Castanhas",
+              "price": 3
+            },
+            {
+              "id": "granulado",
+              "name": "Granulado",
+              "price": 1.5
+            },
+            {
+              "id": "chantilly",
+              "name": "Chantilly",
+              "price": 2
+            },
+            {
+              "id": "cereja",
+              "name": "Cereja",
+              "price": 1
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "chocpop",
@@ -186,7 +683,37 @@
       "name": "Sorvete Simples",
       "description": "Clássico sorvete de rua onde todos os sabores são idênticos.",
       "price": 1.5,
-      "restaurantId": "ice-cream"
+      "restaurantId": "ice-cream",
+      "options": [
+        {
+          "id": "sabor",
+          "name": "Sabor",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "creme",
+              "name": "Creme",
+              "price": 0
+            },
+            {
+              "id": "chocolate",
+              "name": "Chocolate",
+              "price": 0
+            },
+            {
+              "id": "morango",
+              "name": "Morango",
+              "price": 0
+            },
+            {
+              "id": "flocos",
+              "name": "Flocos",
+              "price": 0
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "cup",
@@ -194,7 +721,22 @@
       "name": "Cup Cake de Choc. Branco",
       "description": "Cup Cake de chocolate branco",
       "price": 5.5,
-      "restaurantId": "tasty-treats"
+      "restaurantId": "tasty-treats",
+      "options": [
+        {
+          "id": "cobertura-extra",
+          "name": "Cobertura extra",
+          "min": 0,
+          "max": 1,
+          "options": [
+            {
+              "id": "granulado",
+              "name": "Granulado",
+              "price": 1
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "straw",
@@ -202,7 +744,27 @@
       "name": "Bolo de Morango",
       "description": "Bolo recheado e coberto com morangos",
       "price": 40.5,
-      "restaurantId": "tasty-treats"
+      "restaurantId": "tasty-treats",
+      "options": [
+        {
+          "id": "tamanho",
+          "name": "Tamanho",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "1-kg",
+              "name": "1 kg",
+              "price": 0
+            },
+            {
+              "id": "2-kg",
+              "name": "2 kg",
+              "price": 38
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "cake",
@@ -210,7 +772,22 @@
       "name": "Fatia de Bolo",
       "description": "Fatia de bolo de morango",
       "price": 5.9,
-      "restaurantId": "tasty-treats"
+      "restaurantId": "tasty-treats",
+      "options": [
+        {
+          "id": "acompanhamento",
+          "name": "Acompanhamento",
+          "min": 0,
+          "max": 1,
+          "options": [
+            {
+              "id": "bola-de-sorvete",
+              "name": "Bola de sorvete",
+              "price": 6
+            }
+          ]
+        }
+      ]
     }
   ],
   "reviews": [

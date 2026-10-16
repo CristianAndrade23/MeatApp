@@ -1,0 +1,275 @@
+:host {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: inherit;
+  flex: 1;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 0.75rem 0.6rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.top-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.close {
+  flex: none;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--brand);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.close:hover {
+  background: var(--brand-soft);
+}
+
+.scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.scroll:focus {
+  outline: none;
+}
+
+.hero {
+  display: grid;
+  place-items: center;
+  background: var(--surface-muted);
+  padding: 1.5rem;
+}
+
+.hero img {
+  max-height: 11rem;
+  width: auto;
+}
+
+.intro {
+  padding: 1.5rem 1.5rem 1.25rem;
+}
+
+h2 {
+  font-size: 1.35rem;
+  margin: 0 0 0.6rem;
+}
+
+.description {
+  color: var(--text-muted);
+  margin: 0 0 1rem;
+}
+
+.price {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Grupos de opções */
+
+.group-header {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.5rem 0.85rem calc(1.5rem - 4px);
+  background: #f2f2f2;
+  border-left: 4px solid transparent;
+}
+
+.group-header.missing {
+  background: #fde8e5;
+  border-left-color: var(--brand);
+}
+
+.missing-text {
+  color: var(--brand-dark);
+  font-weight: 600;
+}
+
+h3 {
+  font-size: 1rem;
+  margin: 0 0 0.2rem;
+}
+
+.rule {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.badge {
+  flex: none;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-radius: 4px;
+  padding: 0.3rem 0.5rem;
+}
+
+.badge.required {
+  background: #3f3e3e;
+  color: #fff;
+}
+
+.missing .badge.required {
+  background: var(--brand);
+}
+
+.badge.done {
+  color: var(--success);
+  font-size: 1rem;
+  padding: 0;
+}
+
+.badge.counter {
+  background: #e3e3e3;
+  color: var(--text);
+}
+
+.options {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.95rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: normal;
+  cursor: pointer;
+}
+
+.option:hover {
+  background: var(--surface-muted);
+}
+
+.option.disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.option-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.option-price {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.option input {
+  flex: none;
+  width: 1.2rem;
+  height: 1.2rem;
+  accent-color: var(--brand);
+  cursor: inherit;
+}
+
+/* Observação */
+
+.note {
+  padding: 1.5rem;
+}
+
+.note label {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+}
+
+.note .counter {
+  font-weight: normal;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+textarea {
+  width: 100%;
+  resize: vertical;
+  padding: 0.75rem;
+  font: inherit;
+  color: var(--text);
+  border: 1px solid #d2d6de;
+  border-radius: 6px;
+}
+
+textarea:focus {
+  border-color: var(--primary);
+  outline: none;
+}
+
+/* Rodapé fixo: quantidade + adicionar */
+
+.dialog-footer {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 -4px 12px rgb(0 0 0 / 0.05);
+}
+
+.quantity {
+  display: flex;
+  align-items: center;
+  border: 1px solid #d2d6de;
+  border-radius: 6px;
+}
+
+.quantity button {
+  width: 2.5rem;
+  height: 100%;
+  border: 0;
+  background: none;
+  color: var(--brand);
+  cursor: pointer;
+}
+
+.quantity button:disabled {
+  color: var(--border-strong);
+  cursor: default;
+}
+
+.quantity span {
+  min-width: 1.75rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.add {
+  flex: 1;
+  justify-content: space-between;
+  padding: 0.8rem 1.25rem;
+  font-weight: 600;
+}

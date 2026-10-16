@@ -7,8 +7,10 @@ import type {
   Db,
   DeliveryAddress,
   DeliveryType,
+  MenuItem,
   Order,
   OrderItem,
+  OrderItemOption,
   Payment,
   PaymentMethod,
   PaymentTiming,
@@ -123,13 +125,63 @@ function validateItems(
     if (typeof quantity !== 'number' || !Number.isInteger(quantity) || quantity < 1 || quantity > 99) {
       return { error: 'Quantidade inválida.' };
     }
-    orderItems.push({ menuId: menuItem.id, quantity });
+
+    const options = validateOptions(menuItem, item['options']);
+    if ('error' in options) return options;
+
+    const note = item['note'] === undefined ? '' : text(item['note']);
+    if (typeof item['note'] !== 'undefined' && typeof item['note'] !== 'string') {
+      return { error: 'Observação inválida.' };
+    }
+    if (note.length > MAX_NOTE_LENGTH) return { error: 'Observação muito longa.' };
+
+    const unitPrice = money(menuItem.price + options.value.extra);
+    orderItems.push({
+      menuId: menuItem.id,
+      quantity,
+      ...(options.value.selected.length ? { options: options.value.selected } : {}),
+      ...(note ? { note } : {}),
+      unitPrice,
+    });
     restaurants.add(menuItem.restaurantId);
-    itemsValue += menuItem.price * quantity;
+    itemsValue += unitPrice * quantity;
   }
   if (restaurants.size > 1) return { error: 'Todos os itens devem ser do mesmo restaurante.' };
 
   return { value: { orderItems, itemsValue: money(itemsValue), restaurantId: [...restaurants][0] } };
+}
+
+export const MAX_NOTE_LENGTH = 140;
+
+/** Confere as opções escolhidas contra os grupos do item (existência, mínimo e máximo). */
+function validateOptions(
+  menuItem: MenuItem,
+  raw: unknown,
+): Result<{ selected: OrderItemOption[]; extra: number }> {
+  if (raw !== undefined && !Array.isArray(raw)) return { error: 'Opções inválidas.' };
+  const chosen = (raw ?? []).map(asRecord);
+  const groups = menuItem.options ?? [];
+
+  const selected: OrderItemOption[] = [];
+  let extra = 0;
+  for (const c of chosen) {
+    const group = groups.find((g) => g.id === c['groupId']);
+    const option = group?.options.find((o) => o.id === c['optionId']);
+    if (!group || !option) return { error: `Opção inválida para ${menuItem.name}.` };
+    if (selected.some((s) => s.groupId === group.id && s.optionId === option.id)) {
+      return { error: `Opção repetida para ${menuItem.name}.` };
+    }
+    selected.push({ groupId: group.id, optionId: option.id });
+    extra += option.price;
+  }
+
+  for (const group of groups) {
+    const count = selected.filter((s) => s.groupId === group.id).length;
+    if (count < group.min) return { error: `Escolha ${group.name.toLowerCase()} para ${menuItem.name}.` };
+    if (count > group.max) return { error: `Opções demais em ${group.name.toLowerCase()} (${menuItem.name}).` };
+  }
+
+  return { value: { selected, extra } };
 }
 
 function validateAddress(raw: unknown): Result<DeliveryAddress> {

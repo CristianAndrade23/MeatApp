@@ -43,6 +43,11 @@ mt-root {
   display: contents;
 }
 
+/* Com um modal aberto, a página atrás não rola. */
+html:has(dialog[open]) {
+  overflow: hidden;
+}
+
 a {
   color: var(--primary);
 }

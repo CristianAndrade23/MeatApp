@@ -39,8 +39,7 @@ describe('Order (checkout em etapas)', () => {
     });
     const cart = TestBed.inject(CartStore);
     const donut = { id: 'donut', name: 'Donut', description: '', price: 2.5, imagePath: '', restaurantId: 'bread-bakery' };
-    cart.add(donut);
-    cart.add(donut);
+    cart.add({ menuItem: donut, quantity: 2 });
 
     http = TestBed.inject(HttpTestingController);
     await render();

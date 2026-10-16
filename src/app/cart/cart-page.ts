@@ -3,9 +3,10 @@ import { httpResource } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { API_URL, Restaurant } from '../core/models';
+import { ConfirmService } from '../core/confirm.service';
 import { NotificationService } from '../core/notification.service';
 import { OrderItems } from '../order/order-items';
-import { CartStore } from './cart.store';
+import { CartStore, CLEAR_BAG_CONFIRM } from './cart.store';
 
 /** Sacola: revisar itens antes de finalizar. Não exige login. */
 @Component({
@@ -139,14 +140,17 @@ import { CartStore } from './cart.store';
 export class CartPage {
   protected readonly cart = inject(CartStore);
   private readonly notifications = inject(NotificationService);
+  private readonly confirm = inject(ConfirmService);
 
   protected readonly restaurant = httpResource<Restaurant>(() => {
     const id = this.cart.restaurantId();
     return id ? `${API_URL}/restaurants/${encodeURIComponent(id)}` : undefined;
   });
 
-  protected clear() {
-    this.cart.clear();
-    this.notifications.notify('Sua sacola foi esvaziada');
+  protected async clear() {
+    if (await this.confirm.confirm(CLEAR_BAG_CONFIRM)) {
+      this.cart.clear();
+      this.notifications.notify('Sua sacola foi esvaziada');
+    }
   }
 }

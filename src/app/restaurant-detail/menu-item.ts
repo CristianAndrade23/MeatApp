@@ -2,11 +2,12 @@ import { CurrencyPipe } from '@angular/common';
 import { Component, input, output } from '@angular/core';
 import { MenuItem } from '../core/models';
 
+/** Card do item no cardápio. Clicar no card ou em "Adicionar" abre o modal do item. */
 @Component({
   selector: 'mt-menu-item',
   imports: [CurrencyPipe],
   template: `
-    <article class="info-box">
+    <article class="info-box" (click)="selected.emit(menuItem())">
       <span class="info-box-icon"><img [src]="menuItem().imagePath" alt="" /></span>
       <div class="info-box-content">
         <h3 class="info-box-title">{{ menuItem().name }}</h3>
@@ -17,7 +18,7 @@ import { MenuItem } from '../core/models';
             type="button"
             class="btn btn-outline btn-sm"
             [attr.aria-label]="'Adicionar ' + menuItem().name + ' à sacola'"
-            (click)="add.emit(menuItem())"
+            (click)="$event.stopPropagation(); selected.emit(menuItem())"
           >
             <i class="fa-solid fa-plus"></i> Adicionar
           </button>
@@ -26,6 +27,13 @@ import { MenuItem } from '../core/models';
     </article>
   `,
   styles: `
+    .info-box {
+      cursor: pointer;
+      transition: box-shadow 0.15s;
+    }
+    .info-box:hover {
+      box-shadow: 0 3px 10px rgb(0 0 0 / 0.15);
+    }
     .info-box-title {
       margin: 0 0 0.5rem;
       max-width: 100%;
@@ -54,5 +62,5 @@ import { MenuItem } from '../core/models';
 })
 export class MenuItemCard {
   readonly menuItem = input.required<MenuItem>();
-  readonly add = output<MenuItem>();
+  readonly selected = output<MenuItem>();
 }

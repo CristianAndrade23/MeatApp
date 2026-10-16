@@ -1,8 +1,9 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { cartItemValue } from '../core/models';
-import { CartStore } from './cart.store';
+import { ConfirmService } from '../core/confirm.service';
+import { cartItemDetails, cartItemValue } from '../core/models';
+import { CartStore, CLEAR_BAG_CONFIRM } from './cart.store';
 
 /** Sacola resumida exibida ao lado do cardápio. */
 @Component({
@@ -18,10 +19,13 @@ import { CartStore } from './cart.store';
         <p class="empty">Sua sacola está vazia</p>
       } @else {
         <ul class="items">
-          @for (item of cart.items(); track item.menuItem.id) {
+          @for (item of cart.items(); track item.key) {
             <li>
               <div class="item-info">
                 <span class="item-name">{{ item.menuItem.name }}</span>
+                @if (details(item)) {
+                  <span class="item-meta">{{ details(item) }}</span>
+                }
                 <span class="item-meta">{{ item.quantity }}x · {{ itemValue(item) | currency }}</span>
               </div>
               <button
@@ -46,7 +50,7 @@ import { CartStore } from './cart.store';
             <i class="fa-solid fa-credit-card"></i> Fechar pedido
           </a>
           <a routerLink="/cart" class="btn btn-outline">Ver sacola completa</a>
-          <button type="button" class="link-button clear" (click)="cart.clear()">
+          <button type="button" class="link-button clear" (click)="clear()">
             <i class="fa-solid fa-trash"></i> Limpar sacola
           </button>
         </footer>
@@ -111,5 +115,13 @@ import { CartStore } from './cart.store';
 })
 export class ShoppingCart {
   protected readonly cart = inject(CartStore);
+  private readonly confirm = inject(ConfirmService);
   protected readonly itemValue = cartItemValue;
+  protected readonly details = cartItemDetails;
+
+  protected async clear() {
+    if (await this.confirm.confirm(CLEAR_BAG_CONFIRM)) {
+      this.cart.clear();
+    }
+  }
 }

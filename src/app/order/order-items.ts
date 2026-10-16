@@ -1,7 +1,7 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CartItem, cartItemValue } from '../core/models';
+import { CartItem, cartItemDetails, cartItemValue } from '../core/models';
 
 @Component({
   selector: 'mt-order-items',
@@ -16,13 +16,12 @@ import { CartItem, cartItemValue } from '../core/models';
             <tr>
               <th class="text-center">Quantidade</th>
               <th>Item</th>
-              <th>Descrição</th>
               <th class="text-right">Subtotal</th>
               <th><span class="sr-only">Ações</span></th>
             </tr>
           </thead>
           <tbody>
-            @for (item of items(); track item.menuItem.id) {
+            @for (item of items(); track item.key) {
               <tr>
                 <td class="text-center qty">
                   <button type="button" class="icon-button" aria-label="Diminuir quantidade" (click)="decrease.emit(item)">
@@ -33,8 +32,15 @@ import { CartItem, cartItemValue } from '../core/models';
                     <i class="fa-solid fa-plus"></i>
                   </button>
                 </td>
-                <td class="name">{{ item.menuItem.name }}</td>
-                <td class="description">{{ item.menuItem.description }}</td>
+                <td class="name">
+                  <span class="item-name">{{ item.menuItem.name }}</span>
+                  @if (details(item)) {
+                    <span class="item-details">{{ details(item) }}</span>
+                  }
+                  @if (item.note) {
+                    <span class="item-note"><i class="fa-regular fa-comment"></i> {{ item.note }}</span>
+                  }
+                </td>
                 <td class="text-right value">{{ itemValue(item) | currency }}</td>
                 <td class="text-right remove">
                   <button
@@ -57,13 +63,28 @@ import { CartItem, cartItemValue } from '../core/models';
     .qty {
       white-space: nowrap;
     }
+    .name {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .item-name {
+      font-weight: 600;
+    }
+    .item-details,
+    .item-note {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+    .item-note {
+      font-style: italic;
+    }
     .qty .icon-button {
       padding: 0.35rem 0.6rem;
     }
     /* No celular cada item vira um card: nome e valor em cima, quantidade embaixo. */
     @media (max-width: 575px) {
-      thead,
-      .description {
+      thead {
         display: none;
       }
       tr {
@@ -81,7 +102,6 @@ import { CartItem, cartItemValue } from '../core/models';
       }
       .name {
         grid-area: 1 / 1;
-        font-weight: 600;
       }
       .value {
         grid-area: 1 / 2;
@@ -105,4 +125,5 @@ export class OrderItems {
   readonly decrease = output<CartItem>();
   readonly remove = output<CartItem>();
   protected readonly itemValue = cartItemValue;
+  protected readonly details = cartItemDetails;
 }

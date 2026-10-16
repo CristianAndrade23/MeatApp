@@ -15,8 +15,11 @@ O código da versão original continua acessível pela tag [`v1-angular4`](../..
 ## Funcionalidades
 
 - Lista de restaurantes com busca (debounce) e detalhes com cardápio e avaliações
+- Modal do item no estilo iFood: grupos de opções obrigatórios ou opcionais (ex.: ponto da carne,
+  adicionais pagos, tamanho), observação, quantidade e total; opções validadas e cobradas no servidor
 - Sacola de compras com signals, persistida no `localStorage` (itens de um restaurante por vez),
   com página própria acessível pelo header e sem exigir login
+- Confirmações em modal próprio (sem `alert`/`confirm` do navegador)
 - Login com JWT; a finalização do pedido exige usuário logado (`canMatch`)
 - Checkout em etapas (Entrega → Pagamento → Revisão) com Signal Forms:
   - entrega no endereço ou retirada na loja (sem frete, com endereço e horário do restaurante)

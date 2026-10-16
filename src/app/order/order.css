@@ -266,6 +266,11 @@ fieldset {
   border-bottom: 1px solid var(--border);
 }
 
+.summary-details {
+  display: block;
+  color: var(--text-muted);
+}
+
 .summary-items li {
   display: flex;
   justify-content: space-between;

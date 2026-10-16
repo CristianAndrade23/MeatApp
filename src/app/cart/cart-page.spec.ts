@@ -5,6 +5,7 @@ import localePt from '@angular/common/locales/pt';
 import { DEFAULT_CURRENCY_CODE, LOCALE_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { ConfirmService } from '../core/confirm.service';
 import { CartPage } from './cart-page';
 import { CartStore } from './cart.store';
 
@@ -43,7 +44,9 @@ describe('CartPage (sacola)', () => {
 
   it('lista os itens, permite ajustar e segue para o checkout', async () => {
     const cart = TestBed.inject(CartStore);
-    cart.add({ id: 'cupcake', name: 'Cup Cake', description: '', price: 5.5, imagePath: '', restaurantId: 'tasty-treats' });
+    cart.add({
+      menuItem: { id: 'cupcake', name: 'Cup Cake', description: '', price: 5.5, imagePath: '', restaurantId: 'tasty-treats' },
+    });
     const { fixture, el, text } = await render();
 
     expect(text()).toContain('Tasty Treats');
@@ -57,5 +60,26 @@ describe('CartPage (sacola)', () => {
 
     const continueLink = Array.from(el.querySelectorAll('a')).find((a) => a.textContent!.includes('Continuar'));
     expect(continueLink?.getAttribute('href')).toBe('/order');
+  });
+
+  it('pede confirmação em modal antes de esvaziar a sacola', async () => {
+    const cart = TestBed.inject(CartStore);
+    cart.add({
+      menuItem: { id: 'cupcake', name: 'Cup Cake', description: '', price: 5.5, imagePath: '', restaurantId: 'tasty-treats' },
+    });
+    const { fixture, el } = await render();
+    const confirm = TestBed.inject(ConfirmService);
+    const clearButton = () => Array.from(el.querySelectorAll('button')).find((b) => b.textContent!.includes('Esvaziar'))!;
+
+    clearButton().click();
+    expect(confirm.pending()?.title).toBe('Esvaziar a sacola?');
+    confirm.answer(false);
+    await fixture.whenStable();
+    expect(cart.isEmpty()).toBe(false);
+
+    clearButton().click();
+    confirm.answer(true);
+    await fixture.whenStable();
+    expect(cart.isEmpty()).toBe(true);
   });
 });

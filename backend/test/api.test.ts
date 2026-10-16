@@ -105,7 +105,7 @@ describe('pedidos', () => {
     payment: { timing: 'ON_DELIVERY', method: 'DEBIT' },
     orderItems: [
       { menuId: 'cup-cake', quantity: 2 },
-      { menuId: 'donut', quantity: 1 },
+      { menuId: 'donut', quantity: 1, options: [{ groupId: 'recheio', optionId: 'chocolate' }] },
     ],
   };
   type Body = Record<string, unknown>;
@@ -169,6 +169,48 @@ describe('pedidos', () => {
     assert.equal(res.status, 201);
     assert.equal(((await res.json()) as { payment: Body }).payment['changeFor'], 50);
   });
+
+  it('soma o preço das opções escolhidas e guarda a observação', async () => {
+    const burger = {
+      menuId: 'burger',
+      quantity: 2,
+      options: [
+        { groupId: 'ponto-da-carne', optionId: 'ao-ponto' },
+        { groupId: 'adicionais', optionId: 'bacon' },
+        { groupId: 'adicionais', optionId: 'queijo-extra' },
+      ],
+      note: '  sem cebola  ',
+    };
+    const res = await post('/orders', { ...validOrder, orderItems: [burger] }, await login());
+    assert.equal(res.status, 201);
+    const order = (await res.json()) as { orderItems: Body[]; itemsValue: number };
+    // (18,50 + 4 bacon + 3 queijo) x 2
+    assert.equal(order.orderItems[0]['unitPrice'], 25.5);
+    assert.equal(order.itemsValue, 51);
+    assert.equal(order.orderItems[0]['note'], 'sem cebola');
+  });
+
+  for (const [caso, item] of [
+    ['opção obrigatória faltando', { menuId: 'donut', quantity: 1 }],
+    ['opção de outro grupo', { menuId: 'donut', quantity: 1, options: [{ groupId: 'recheio', optionId: 'bacon' }] }],
+    [
+      'mais opções que o máximo',
+      {
+        menuId: 'cup-cake',
+        quantity: 1,
+        options: [
+          { groupId: 'cobertura-extra', optionId: 'granulado' },
+          { groupId: 'cobertura-extra', optionId: 'confeitos-coloridos' },
+        ],
+      },
+    ],
+    ['observação longa demais', { menuId: 'bread', quantity: 1, note: 'x'.repeat(141) }],
+  ] as const) {
+    it(`recusa item com ${caso}`, async () => {
+      const res = await post('/orders', { ...validOrder, orderItems: [item] }, await login());
+      assert.equal(res.status, 400);
+    });
+  }
 
   for (const [caso, override] of [
     ['tipo de entrega desconhecido', { deliveryType: 'DRONE' }],

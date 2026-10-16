@@ -13,6 +13,21 @@ export interface Restaurant {
   hours?: string;
 }
 
+export interface MenuOption {
+  id: string;
+  name: string;
+  price: number;
+}
+
+/** Grupo de opções de um item (ex.: "Ponto da carne", obrigatório; "Adicionais", até 3). */
+export interface MenuOptionGroup {
+  id: string;
+  name: string;
+  min: number;
+  max: number;
+  options: MenuOption[];
+}
+
 export interface MenuItem {
   id: string;
   name: string;
@@ -20,6 +35,7 @@ export interface MenuItem {
   price: number;
   imagePath: string;
   restaurantId: string;
+  options?: MenuOptionGroup[];
 }
 
 export interface Review {
@@ -36,9 +52,18 @@ export interface User {
   passwordHash: string;
 }
 
+export interface OrderItemOption {
+  groupId: string;
+  optionId: string;
+}
+
 export interface OrderItem {
   menuId: string;
   quantity: number;
+  options?: OrderItemOption[];
+  note?: string;
+  /** Preço unitário calculado no servidor: preço do item + opções escolhidas. */
+  unitPrice: number;
 }
 
 export type DeliveryType = 'DELIVERY' | 'PICKUP';

@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { ConfirmDialog } from './layout/confirm-dialog';
 import { Header } from './layout/header';
 import { Snackbar } from './layout/snackbar';
 
 @Component({
   selector: 'mt-root',
-  imports: [RouterOutlet, Header, Snackbar],
+  imports: [RouterOutlet, Header, Snackbar, ConfirmDialog],
   template: `
     <mt-header />
 
@@ -14,6 +15,7 @@ import { Snackbar } from './layout/snackbar';
     </main>
 
     <mt-snackbar />
+    <mt-confirm-dialog />
 
     <footer class="main-footer">
       <div class="container">

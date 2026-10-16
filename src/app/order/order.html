@@ -228,9 +228,14 @@
         <p class="summary-restaurant"><i class="fa-solid fa-store"></i> {{ r.name }}</p>
       }
       <ul class="summary-items">
-        @for (item of cart.items(); track item.menuItem.id) {
+        @for (item of cart.items(); track item.key) {
           <li>
-            <span>{{ item.quantity }}x {{ item.menuItem.name }}</span>
+            <span>
+              {{ item.quantity }}x {{ item.menuItem.name }}
+              @if (item.options.length) {
+                <small class="summary-details">{{ details(item) }}</small>
+              }
+            </span>
             <span>{{ itemValue(item) | currency }}</span>
           </li>
         }

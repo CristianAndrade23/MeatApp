@@ -15,6 +15,21 @@ export interface Restaurant {
   hours?: string;
 }
 
+export interface MenuOption {
+  id: string;
+  name: string;
+  price: number;
+}
+
+/** Grupo de opções de um item (ex.: "Ponto da carne", obrigatório; "Adicionais", até 3). */
+export interface MenuOptionGroup {
+  id: string;
+  name: string;
+  min: number;
+  max: number;
+  options: MenuOption[];
+}
+
 export interface MenuItem {
   id: string;
   name: string;
@@ -22,6 +37,7 @@ export interface MenuItem {
   price: number;
   imagePath: string;
   restaurantId: string;
+  options?: MenuOptionGroup[];
 }
 
 export interface Review {
@@ -38,12 +54,35 @@ export interface User {
   accessToken: string;
 }
 
-export interface CartItem {
-  menuItem: MenuItem;
-  quantity: number;
+export interface SelectedOption {
+  groupId: string;
+  optionId: string;
+  name: string;
+  price: number;
 }
 
-export const cartItemValue = (item: CartItem) => item.menuItem.price * item.quantity;
+/**
+ * Linha da sacola. O mesmo item com opções ou observação diferentes vira outra linha,
+ * identificada por `key`.
+ */
+export interface CartItem {
+  key: string;
+  menuItem: MenuItem;
+  quantity: number;
+  options: SelectedOption[];
+  note?: string;
+}
+
+export const cartItemKey = (menuItemId: string, options: SelectedOption[], note = '') =>
+  [menuItemId, ...options.map((o) => `${o.groupId}:${o.optionId}`).sort(), note.trim()].join('|');
+
+export const cartItemUnitPrice = (item: Pick<CartItem, 'menuItem' | 'options'>) =>
+  item.menuItem.price + item.options.reduce((sum, o) => sum + o.price, 0);
+
+export const cartItemValue = (item: CartItem) => cartItemUnitPrice(item) * item.quantity;
+
+/** Resumo das opções para listas: "Ao ponto, Bacon, Queijo extra". */
+export const cartItemDetails = (item: CartItem) => item.options.map((o) => o.name).join(', ');
 
 export type DeliveryType = 'DELIVERY' | 'PICKUP';
 export type PaymentTiming = 'ONLINE' | 'ON_DELIVERY';
@@ -66,7 +105,12 @@ export interface OrderRequest {
   deliveryType: DeliveryType;
   address?: DeliveryAddress;
   payment: PaymentRequest;
-  orderItems: { menuId: string; quantity: number }[];
+  orderItems: {
+    menuId: string;
+    quantity: number;
+    options?: { groupId: string; optionId: string }[];
+    note?: string;
+  }[];
 }
 
 export interface Order extends OrderRequest {
