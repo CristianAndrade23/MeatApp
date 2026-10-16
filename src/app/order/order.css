@@ -64,7 +64,9 @@
   background: var(--success);
 }
 
+.stepper a,
 .stepper button {
+  text-decoration: none;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -241,6 +243,16 @@ fieldset {
 }
 
 /* Resumo lateral */
+
+.summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.summary-header a {
+  font-size: 0.9rem;
+}
 
 .summary-restaurant {
   margin: 0.5rem 0;

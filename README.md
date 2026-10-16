@@ -15,7 +15,8 @@ O código da versão original continua acessível pela tag [`v1-angular4`](../..
 ## Funcionalidades
 
 - Lista de restaurantes com busca (debounce) e detalhes com cardápio e avaliações
-- Carrinho de compras com signals, persistido no `localStorage` (itens de um restaurante por vez)
+- Sacola de compras com signals, persistida no `localStorage` (itens de um restaurante por vez),
+  com página própria acessível pelo header e sem exigir login
 - Login com JWT; a finalização do pedido exige usuário logado (`canMatch`)
 - Checkout em etapas (Entrega → Pagamento → Revisão) com Signal Forms:
   - entrega no endereço ou retirada na loja (sem frete, com endereço e horário do restaurante)
@@ -23,7 +24,8 @@ O código da versão original continua acessível pela tag [`v1-angular4`](../..
     (dinheiro com troco, débito, crédito ou vale-refeição)
   - cartão validado no navegador (Luhn, bandeira, validade); o pagamento online é **simulado**
     e só bandeira + 4 últimos dígitos são enviados ao servidor
-- Confirmação ao sair com o pedido pela metade (`canDeactivate`)
+  - rascunho do checkout mantido em memória: dá para voltar à sacola, ajustar itens ou refazer o
+    login e retomar da mesma etapa
 - Frete e total recalculados no servidor a partir dos preços do cardápio
 - Resumo do pedido com avaliação por estrelas
 - Notificações (snackbar), tratamento centralizado de erros HTTP e página 404

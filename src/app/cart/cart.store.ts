@@ -42,7 +42,7 @@ export class CartStore {
     const current = this.restaurantId();
     if (current && current !== menuItem.restaurantId) {
       const replace = confirmReplace(
-        'Seu carrinho tem itens de outro restaurante. Deseja esvaziá-lo e adicionar este item?',
+        'Sua sacola tem itens de outro restaurante. Deseja esvaziá-la e adicionar este item?',
       );
       if (!replace) return false;
       this._items.set([]);

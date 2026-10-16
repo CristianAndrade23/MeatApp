@@ -6,6 +6,7 @@ import { DEFAULT_CURRENCY_CODE, LOCALE_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { CartStore } from '../cart/cart.store';
+import { CheckoutDraft } from './checkout-draft';
 import { Order } from './order';
 
 registerLocaleData(localePt);
@@ -41,14 +42,24 @@ describe('Order (checkout em etapas)', () => {
     cart.add(donut);
     cart.add(donut);
 
+    http = TestBed.inject(HttpTestingController);
+    await render();
+  });
+
+  async function render() {
     fixture = TestBed.createComponent(Order);
     el = fixture.nativeElement;
-    http = TestBed.inject(HttpTestingController);
     // whenStable() aguarda requisições pendentes, então a do restaurante é respondida antes.
     TestBed.tick();
     http.expectOne('/api/restaurants/bread-bakery').flush(restaurant);
     await fixture.whenStable();
-  });
+  }
+
+  /** Simula sair do checkout (ex.: para a sacola) e voltar: o componente é recriado. */
+  async function recreate() {
+    fixture.destroy();
+    await render();
+  }
 
   // O pipe currency em pt-BR usa espaço inseparável entre "R$" e o valor.
   const text = (selector?: string) =>
@@ -161,9 +172,10 @@ describe('Order (checkout em etapas)', () => {
     req.flush({ id: '1' });
     await fixture.whenStable();
 
-    expect(TestBed.inject(CartStore).isEmpty()).toBe(true);
-    expect(fixture.componentInstance.orderCompleted()).toBe(true);
     expect(navigate).toHaveBeenCalledWith('/order-summary');
+    // A sacola só é esvaziada depois da navegação, para o checkout não piscar "sacola vazia".
+    await vi.waitFor(() => expect(TestBed.inject(CartStore).isEmpty()).toBe(true));
+    expect(TestBed.inject(CheckoutDraft).model().deliveryType).toBe('');
   });
 
   it('retirada + dinheiro com troco na retirada', async () => {
@@ -187,12 +199,51 @@ describe('Order (checkout em etapas)', () => {
     });
   });
 
+  it('oferece caminhos de volta para a sacola', async () => {
+    expect(el.querySelector('.stepper li:first-child a')?.getAttribute('href')).toBe('/cart');
+    expect(el.querySelector('.form-actions a')?.textContent).toContain('Voltar à sacola');
+    expect(el.querySelector('.summary-header a')?.getAttribute('href')).toBe('/cart');
+  });
+
+  it('mantém as escolhas e a etapa ao sair e voltar para o checkout', async () => {
+    await choose('PICKUP');
+    await click('Continuar');
+    await choose('ON_DELIVERY');
+    await choose('DEBIT');
+    await click('Continuar');
+    expect(stepTitle()).toBe('Revise o seu pedido');
+
+    // Sai (ex.: foi rever a sacola) e volta: o componente é recriado.
+    await recreate();
+
+    expect(stepTitle()).toBe('Revise o seu pedido');
+    expect(text('.review')).toContain('Pagar na retirada · Cartão de débito');
+  });
+
+  it('ao voltar, para na etapa que ficou inválida', async () => {
+    await choose('PICKUP');
+    await click('Continuar');
+    await choose('ON_DELIVERY');
+    await choose('CASH');
+    await type('change-for', '6');
+    await click('Continuar');
+    expect(stepTitle()).toBe('Revise o seu pedido');
+
+    // Na sacola, adicionou mais um item: o troco de R$ 6 não cobre mais o total.
+    const cart = TestBed.inject(CartStore);
+    cart.increase(cart.items()[0]);
+    await recreate();
+
+    expect(stepTitle()).toBe('Quando você quer pagar?');
+    expect(text()).toContain('Informe um valor a partir de R$ 7,50');
+  });
+
   it('o indicador permite voltar para etapas anteriores', async () => {
     await choose('PICKUP');
     await click('Continuar');
-    el.querySelector<HTMLButtonElement>('.stepper li:first-child button')!.click();
+    el.querySelector<HTMLButtonElement>('.stepper li:nth-child(2) button')!.click();
     await fixture.whenStable();
     expect(stepTitle()).toBe('Como você quer receber?');
-    expect(el.querySelector<HTMLButtonElement>('.stepper li:nth-child(3) button')!.disabled).toBe(true);
+    expect(el.querySelector<HTMLButtonElement>('.stepper li:nth-child(4) button')!.disabled).toBe(true);
   });
 });

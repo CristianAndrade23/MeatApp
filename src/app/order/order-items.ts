@@ -8,7 +8,7 @@ import { CartItem, cartItemValue } from '../core/models';
   imports: [CurrencyPipe, RouterLink],
   template: `
     @if (items().length === 0) {
-      <p>Não há itens no seu carrinho. Que tal começar a comprar <a routerLink="/restaurants">agora</a>?</p>
+      <p>Não há itens na sua sacola. Que tal começar a comprar <a routerLink="/restaurants">agora</a>?</p>
     } @else {
       <div class="table-responsive">
         <table class="table table-striped">

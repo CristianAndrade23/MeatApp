@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { loggedInGuard } from './core/auth/auth.guard';
-import { leaveOrderGuard } from './order/leave-order.guard';
 import { Home } from './pages/home';
 import { NotFound } from './pages/not-found';
 import { Menu } from './restaurant-detail/menu';
@@ -22,9 +21,13 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'cart',
+    loadComponent: () => import('./cart/cart-page').then((m) => m.CartPage),
+    title: 'Sacola | Meat',
+  },
+  {
     path: 'order',
     canMatch: [loggedInGuard],
-    canDeactivate: [leaveOrderGuard],
     loadComponent: () => import('./order/order').then((m) => m.Order),
     title: 'Finalizar pedido | Meat',
   },

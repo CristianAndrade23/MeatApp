@@ -7,7 +7,6 @@ import {
   effect,
   inject,
   Injector,
-  signal,
   untracked,
 } from '@angular/core';
 import {
@@ -48,23 +47,12 @@ import {
   PAYMENT_METHODS,
   timingOptions,
 } from './checkout.rules';
+import { CheckoutDraft, CheckoutStep } from './checkout-draft';
 import { DeliveryCosts } from './delivery-costs';
 import { OrderItems } from './order-items';
 import { OrderService } from './order.service';
 
-export interface CheckoutModel {
-  deliveryType: DeliveryType | '';
-  address: { street: string; number: string; complement: string };
-  payment: {
-    timing: PaymentTiming | '';
-    method: PaymentMethod | '';
-    /** Troco para quanto (texto digitado, em reais). */
-    changeFor: string;
-    card: { number: string; name: string; expiry: string; cvv: string };
-  };
-}
-
-type Step = 1 | 2 | 3;
+type Step = CheckoutStep;
 
 const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
@@ -85,23 +73,11 @@ export class Order {
     { n: 2, label: 'Pagamento' },
     { n: 3, label: 'Revisão' },
   ];
-  protected readonly step = signal<Step>(1);
-  /** Maior etapa já alcançada; permite voltar a ela pelo indicador de etapas. */
-  protected readonly maxStep = signal<Step>(1);
-
-  /** Fica `true` depois que o pedido é enviado, liberando a saída da página sem confirmação. */
-  readonly orderCompleted = signal(false);
-
-  readonly model = signal<CheckoutModel>({
-    deliveryType: '',
-    address: { street: '', number: '', complement: '' },
-    payment: {
-      timing: '',
-      method: '',
-      changeFor: '',
-      card: { number: '', name: '', expiry: '', cvv: '' },
-    },
-  });
+  // Estado guardado fora do componente: sair para a sacola e voltar não perde nada.
+  private readonly draft = inject(CheckoutDraft);
+  readonly model = this.draft.model;
+  protected readonly step = this.draft.step;
+  protected readonly maxStep = this.draft.maxStep;
 
   protected readonly restaurant = httpResource<Restaurant>(() => {
     const id = this.cart.restaurantId();
@@ -218,6 +194,11 @@ export class Order {
         }
       });
     });
+
+    // Ao voltar para o checkout, retoma a etapa salva — desde que as anteriores continuem válidas
+    // (ex.: a sacola mudou e o troco informado ficou menor que o novo total).
+    const saved = this.step();
+    if (saved > 1) this.goTo(saved);
   }
 
   protected next() {
@@ -323,8 +304,8 @@ export class Order {
       // O errorInterceptor já avisou o usuário; os dados continuam preenchidos para nova tentativa.
       return;
     }
-    this.orderCompleted.set(true);
-    this.cart.clear();
     await this.router.navigateByUrl('/order-summary');
+    this.cart.clear();
+    this.draft.reset();
   }
 }

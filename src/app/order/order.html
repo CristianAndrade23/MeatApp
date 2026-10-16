@@ -1,7 +1,7 @@
 @if (cart.isEmpty()) {
   <section class="box empty-cart">
     <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
-    <h1>Seu carrinho está vazio</h1>
+    <h1>Sua sacola está vazia</h1>
     <p>Que tal escolher algo nos <a routerLink="/restaurants">restaurantes</a>?</p>
   </section>
 } @else {
@@ -10,6 +10,12 @@
       <h1 class="page-header"><i class="fa-solid fa-cart-shopping"></i> Finalize o seu pedido</h1>
 
       <ol class="stepper">
+        <li class="done">
+          <a routerLink="/cart" title="Voltar à sacola">
+            <span class="step-number" aria-hidden="true"><i class="fa-solid fa-bag-shopping"></i></span>
+            <span class="step-label">Sacola</span>
+          </a>
+        </li>
         @for (s of steps; track s.n) {
           <li [class.done]="step() > s.n" [class.current]="step() === s.n">
             <button
@@ -191,6 +197,10 @@
             <button type="button" class="btn btn-default" (click)="back()">
               <i class="fa-solid fa-arrow-left"></i> Voltar
             </button>
+          } @else {
+            <a class="btn btn-default" routerLink="/cart">
+              <i class="fa-solid fa-arrow-left"></i> Voltar à sacola
+            </a>
           }
           @if (step() < 3) {
             <button type="button" class="btn btn-primary" (click)="next()">
@@ -210,7 +220,10 @@
     </section>
 
     <aside class="box checkout-summary" aria-label="Resumo do pedido">
-      <h2 class="box-title">Resumo do pedido</h2>
+      <header class="summary-header">
+        <h2 class="box-title">Resumo do pedido</h2>
+        <a routerLink="/cart" aria-label="Editar sacola"><i class="fa-solid fa-pen"></i> Editar</a>
+      </header>
       @if (restaurant.value(); as r) {
         <p class="summary-restaurant"><i class="fa-solid fa-store"></i> {{ r.name }}</p>
       }

@@ -30,8 +30,8 @@ import { CartStore } from '../cart/cart.store';
 
           <ul class="navbar-right">
             <li>
-              <a routerLink="/order" routerLinkActive="active" aria-label="Carrinho">
-                <i class="fa-solid fa-cart-shopping"></i>
+              <a routerLink="/cart" routerLinkActive="active" aria-label="Sacola" title="Sacola">
+                <i class="fa-solid fa-bag-shopping"></i>
                 @if (cart.count(); as count) {
                   <span class="badge">{{ count }}</span>
                 }

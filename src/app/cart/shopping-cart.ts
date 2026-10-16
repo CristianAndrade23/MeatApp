@@ -10,11 +10,11 @@ import { CartStore } from './cart.store';
   template: `
     <section class="box">
       <header class="box-header">
-        <h2 class="box-title"><i class="fa-solid fa-cart-shopping"></i> Carrinho</h2>
+        <h2 class="box-title"><i class="fa-solid fa-bag-shopping"></i> Sacola</h2>
       </header>
 
       @if (cart.isEmpty()) {
-        <p class="empty">Seu carrinho está vazio</p>
+        <p class="empty">Sua sacola está vazia</p>
       } @else {
         <table class="table">
           <tbody>
