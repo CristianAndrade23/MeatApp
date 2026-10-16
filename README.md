@@ -15,10 +15,16 @@ O código da versão original continua acessível pela tag [`v1-angular4`](../..
 ## Funcionalidades
 
 - Lista de restaurantes com busca (debounce) e detalhes com cardápio e avaliações
-- Carrinho de compras com signals, persistido no `localStorage`
+- Carrinho de compras com signals, persistido no `localStorage` (itens de um restaurante por vez)
 - Login com JWT; a finalização do pedido exige usuário logado (`canMatch`)
-- Checkout com Signal Forms, validação e confirmação ao sair com o pedido pela metade (`canDeactivate`)
-- Total do pedido recalculado no servidor a partir dos preços do cardápio
+- Checkout em etapas (Entrega → Pagamento → Revisão) com Signal Forms:
+  - entrega no endereço ou retirada na loja (sem frete, com endereço e horário do restaurante)
+  - pagar agora pelo site (Pix ou cartão de crédito) ou na entrega/retirada
+    (dinheiro com troco, débito, crédito ou vale-refeição)
+  - cartão validado no navegador (Luhn, bandeira, validade); o pagamento online é **simulado**
+    e só bandeira + 4 últimos dígitos são enviados ao servidor
+- Confirmação ao sair com o pedido pela metade (`canDeactivate`)
+- Frete e total recalculados no servidor a partir dos preços do cardápio
 - Resumo do pedido com avaliação por estrelas
 - Notificações (snackbar), tratamento centralizado de erros HTTP e página 404
 - Lazy loading das rotas de pedido, login e sobre
@@ -75,13 +81,14 @@ src/app/
   shared/             input com validação, radio e rating
 backend/
   src/                servidor Express, autenticação e banco em arquivo JSON
-  data/seed.json      dados iniciais (o banco local data/db.json é criado na primeira execução)
+  data/seed.json      catálogo: restaurantes, cardápio, avaliações e usuários
+  data/db.json        pedidos (local, fora do git; criado no primeiro pedido)
   test/               testes da API
 ```
 
 Para cadastrar outro usuário, gere o hash da senha com
 `npm --prefix backend run hash-password -- <senha>` e adicione-o em `backend/data/seed.json`
-(apague `backend/data/db.json` para recriar o banco a partir do seed).
+(reinicie a API para carregar).
 
 ## Créditos
 

@@ -1,4 +1,4 @@
-import { copyFile, readFile, writeFile, rename } from 'node:fs/promises';
+import { readFile, writeFile, rename } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 
 export interface Restaurant {
@@ -8,6 +8,7 @@ export interface Restaurant {
   deliveryEstimate: string;
   rating: number;
   imagePath: string;
+  address: string;
   about?: string;
   hours?: string;
 }
@@ -40,13 +41,34 @@ export interface OrderItem {
   quantity: number;
 }
 
+export type DeliveryType = 'DELIVERY' | 'PICKUP';
+export type PaymentTiming = 'ONLINE' | 'ON_DELIVERY';
+export type PaymentMethod = 'PIX' | 'CREDIT' | 'DEBIT' | 'CASH' | 'MEAL_VOUCHER';
+
+export interface DeliveryAddress {
+  street: string;
+  number: string;
+  complement?: string;
+}
+
+export interface Payment {
+  timing: PaymentTiming;
+  method: PaymentMethod;
+  /** Pagamento online é simulado: aprovado na hora. Na entrega/retirada fica pendente. */
+  status: 'PAID' | 'PENDING';
+  changeFor?: number;
+  card?: { brand: string; last4: string };
+}
+
 export interface Order {
   id: string;
-  address: string;
-  number: string;
-  optionalAddress?: string;
-  paymentOption: string;
+  restaurantId: string;
+  deliveryType: DeliveryType;
+  address?: DeliveryAddress;
+  payment: Payment;
   orderItems: OrderItem[];
+  itemsValue: number;
+  deliveryFee: number;
   total: number;
   userEmail: string;
   createdAt: string;
@@ -61,8 +83,8 @@ export interface Data {
 }
 
 /**
- * Banco em arquivo JSON: carrega tudo em memória e regrava o arquivo a cada alteração.
- * As escritas são serializadas e atômicas (arquivo temporário + rename).
+ * Banco em arquivo JSON. O catálogo (restaurantes, cardápio, avaliações, usuários) vem sempre do
+ * seed; o arquivo do banco guarda só os pedidos. Escritas serializadas e atômicas (tmp + rename).
  */
 export class Db {
   private writing: Promise<void> = Promise.resolve();
@@ -74,21 +96,24 @@ export class Db {
     this.data = data;
   }
 
-  /** Abre o banco; se o arquivo ainda não existir, ele é criado a partir de `seedFile`. */
-  static async open(file: string, seedFile?: string): Promise<Db> {
-    if (seedFile && !existsSync(file)) {
-      await copyFile(seedFile, file);
-    }
-    const data = JSON.parse(await readFile(file, 'utf8')) as Data;
-    data.users ??= [];
-    data.orders ??= [];
-    return new Db(file, data);
+  static async open(file: string, seedFile: string): Promise<Db> {
+    const seed = JSON.parse(await readFile(seedFile, 'utf8')) as Partial<Data>;
+    const saved = existsSync(file)
+      ? (JSON.parse(await readFile(file, 'utf8')) as Partial<Data>)
+      : {};
+    return new Db(file, {
+      restaurants: seed.restaurants ?? [],
+      menu: seed.menu ?? [],
+      reviews: seed.reviews ?? [],
+      users: seed.users ?? [],
+      orders: saved.orders ?? [],
+    });
   }
 
   save(): Promise<void> {
     this.writing = this.writing.then(async () => {
       const tmp = `${this.file}.tmp`;
-      await writeFile(tmp, JSON.stringify(this.data, null, 2) + '\n');
+      await writeFile(tmp, JSON.stringify({ orders: this.data.orders }, null, 2) + '\n');
       await rename(tmp, this.file);
     });
     return this.writing;

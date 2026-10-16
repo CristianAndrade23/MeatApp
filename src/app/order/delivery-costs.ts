@@ -13,7 +13,13 @@ import { Component, computed, input } from '@angular/core';
         </tr>
         <tr>
           <th scope="row">Frete:</th>
-          <td class="text-right">{{ delivery() | currency }}</td>
+          <td class="text-right">
+            @switch (delivery()) {
+              @case (null) { <span class="muted">a definir</span> }
+              @case (0) { <span class="free">Grátis</span> }
+              @default { {{ delivery() | currency }} }
+            }
+          </td>
         </tr>
         <tr>
           <th scope="row">Total:</th>
@@ -22,9 +28,19 @@ import { Component, computed, input } from '@angular/core';
       </tbody>
     </table>
   `,
+  styles: `
+    .muted {
+      color: var(--text-muted);
+    }
+    .free {
+      color: var(--success);
+      font-weight: 600;
+    }
+  `,
 })
 export class DeliveryCosts {
-  readonly delivery = input.required<number>();
+  /** Valor do frete; `null` enquanto o tipo de entrega não foi escolhido. */
+  readonly delivery = input.required<number | null>();
   readonly itemsValue = input.required<number>();
-  protected readonly total = computed(() => this.delivery() + this.itemsValue());
+  protected readonly total = computed(() => (this.delivery() ?? 0) + this.itemsValue());
 }

@@ -3,10 +3,24 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import express, { type Request, type Response } from 'express';
 import { type AuthenticatedRequest, loginHandler, requireAuth } from './auth.ts';
-import type { Db, Order, OrderItem } from './db.ts';
+import type {
+  Db,
+  DeliveryAddress,
+  DeliveryType,
+  Order,
+  OrderItem,
+  Payment,
+  PaymentMethod,
+  PaymentTiming,
+} from './db.ts';
 
 export const DELIVERY_FEE = 8;
-export const PAYMENT_OPTIONS = ['MON', 'DEB', 'REF'];
+
+/** Formas de pagamento aceitas em cada momento. */
+export const PAYMENT_METHODS: Record<PaymentTiming, PaymentMethod[]> = {
+  ONLINE: ['PIX', 'CREDIT'],
+  ON_DELIVERY: ['CASH', 'DEBIT', 'CREDIT', 'MEAL_VOUCHER'],
+};
 
 export interface AppOptions {
   db: Db;
@@ -59,8 +73,8 @@ export function createApp({ db, jwtSecret, staticDir }: AppOptions) {
     }
 
     const order: Order = {
-      ...result.order,
       id: randomUUID(),
+      ...result.order,
       userEmail: req.user!.email,
       createdAt: new Date().toISOString(),
     };
@@ -86,45 +100,111 @@ export function createApp({ db, jwtSecret, staticDir }: AppOptions) {
 }
 
 type NewOrder = Omit<Order, 'id' | 'userEmail' | 'createdAt'>;
+type Result<T> = { value: T } | { error: string };
 
-function validateOrder(db: Db, body: unknown): { order: NewOrder } | { error: string } {
-  const b = (body ?? {}) as Record<string, unknown>;
-  const text = (v: unknown) => (typeof v === 'string' ? v.trim() : '');
+const text = (v: unknown) => (typeof v === 'string' ? v.trim() : '');
+const asRecord = (v: unknown) =>
+  (typeof v === 'object' && v !== null ? v : {}) as Record<string, unknown>;
+const money = (v: number) => Math.round(v * 100) / 100;
 
-  const address = text(b['address']);
-  const number = text(b['number']);
-  const optionalAddress = text(b['optionalAddress']);
-  const paymentOption = text(b['paymentOption']);
-
-  if (address.length < 5) return { error: 'Endereço inválido.' };
-  if (!/^[0-9]+$/.test(number)) return { error: 'Número inválido.' };
-  if (!PAYMENT_OPTIONS.includes(paymentOption)) return { error: 'Forma de pagamento inválida.' };
-  if (!Array.isArray(b['orderItems']) || b['orderItems'].length === 0) {
-    return { error: 'O pedido não possui itens.' };
-  }
+function validateItems(
+  db: Db,
+  raw: unknown,
+): Result<{ orderItems: OrderItem[]; itemsValue: number; restaurantId: string }> {
+  if (!Array.isArray(raw) || raw.length === 0) return { error: 'O pedido não possui itens.' };
 
   const orderItems: OrderItem[] = [];
+  const restaurants = new Set<string>();
   let itemsValue = 0;
-  for (const raw of b['orderItems'] as Record<string, unknown>[]) {
-    const menuItem = db.data.menu.find((m) => m.id === raw?.['menuId']);
-    const quantity = raw?.['quantity'];
+  for (const item of raw.map(asRecord)) {
+    const menuItem = db.data.menu.find((m) => m.id === item['menuId']);
+    const quantity = item['quantity'];
     if (!menuItem) return { error: 'Item do pedido inválido.' };
-    if (!Number.isInteger(quantity) || (quantity as number) < 1 || (quantity as number) > 99) {
+    if (typeof quantity !== 'number' || !Number.isInteger(quantity) || quantity < 1 || quantity > 99) {
       return { error: 'Quantidade inválida.' };
     }
-    orderItems.push({ menuId: menuItem.id, quantity: quantity as number });
-    itemsValue += menuItem.price * (quantity as number);
+    orderItems.push({ menuId: menuItem.id, quantity });
+    restaurants.add(menuItem.restaurantId);
+    itemsValue += menuItem.price * quantity;
+  }
+  if (restaurants.size > 1) return { error: 'Todos os itens devem ser do mesmo restaurante.' };
+
+  return { value: { orderItems, itemsValue: money(itemsValue), restaurantId: [...restaurants][0] } };
+}
+
+function validateAddress(raw: unknown): Result<DeliveryAddress> {
+  const a = asRecord(raw);
+  const street = text(a['street']);
+  const number = text(a['number']);
+  const complement = text(a['complement']);
+  if (street.length < 5) return { error: 'Endereço inválido.' };
+  if (!/^[0-9]+$/.test(number)) return { error: 'Número inválido.' };
+  return { value: { street, number, ...(complement ? { complement } : {}) } };
+}
+
+function validatePayment(raw: unknown, total: number): Result<Payment> {
+  const p = asRecord(raw);
+  const timing = text(p['timing']) as PaymentTiming;
+  const method = text(p['method']) as PaymentMethod;
+  if (!(timing in PAYMENT_METHODS)) return { error: 'Momento de pagamento inválido.' };
+  if (!PAYMENT_METHODS[timing].includes(method)) return { error: 'Forma de pagamento inválida.' };
+
+  const payment: Payment = { timing, method, status: timing === 'ONLINE' ? 'PAID' : 'PENDING' };
+
+  if (method === 'CASH' && p['changeFor'] !== undefined) {
+    const changeFor = p['changeFor'];
+    if (typeof changeFor !== 'number' || !Number.isFinite(changeFor) || changeFor < total) {
+      return { error: 'O valor para troco deve ser maior ou igual ao total.' };
+    }
+    payment.changeFor = money(changeFor);
   }
 
-  // Total calculado no servidor a partir dos preços do cardápio, nunca a partir do cliente.
-  const total = Math.round((itemsValue + DELIVERY_FEE) * 100) / 100;
+  // Pagamento online simulado: o cliente envia só bandeira e 4 últimos dígitos, nunca o cartão.
+  if (timing === 'ONLINE' && method === 'CREDIT') {
+    const card = asRecord(p['card']);
+    const brand = text(card['brand']);
+    const last4 = text(card['last4']);
+    if (!brand || !/^[0-9]{4}$/.test(last4)) return { error: 'Dados do cartão inválidos.' };
+    payment.card = { brand, last4 };
+  }
+
+  return { value: payment };
+}
+
+function validateOrder(db: Db, body: unknown): { order: NewOrder } | { error: string } {
+  const b = asRecord(body);
+
+  const items = validateItems(db, b['orderItems']);
+  if ('error' in items) return items;
+
+  const deliveryType = text(b['deliveryType']) as DeliveryType;
+  if (deliveryType !== 'DELIVERY' && deliveryType !== 'PICKUP') {
+    return { error: 'Tipo de entrega inválido.' };
+  }
+
+  let address: DeliveryAddress | undefined;
+  if (deliveryType === 'DELIVERY') {
+    const result = validateAddress(b['address']);
+    if ('error' in result) return result;
+    address = result.value;
+  }
+
+  // Valores calculados no servidor a partir dos preços do cardápio, nunca a partir do cliente.
+  const deliveryFee = deliveryType === 'DELIVERY' ? DELIVERY_FEE : 0;
+  const total = money(items.value.itemsValue + deliveryFee);
+
+  const payment = validatePayment(b['payment'], total);
+  if ('error' in payment) return payment;
+
   return {
     order: {
-      address,
-      number,
-      ...(optionalAddress ? { optionalAddress } : {}),
-      paymentOption,
-      orderItems,
+      restaurantId: items.value.restaurantId,
+      deliveryType,
+      ...(address ? { address } : {}),
+      payment: payment.value,
+      orderItems: items.value.orderItems,
+      itemsValue: items.value.itemsValue,
+      deliveryFee,
       total,
     },
   };

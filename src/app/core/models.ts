@@ -10,6 +10,7 @@ export interface Restaurant {
   deliveryEstimate: string;
   rating: number;
   imagePath: string;
+  address: string;
   about?: string;
   hours?: string;
 }
@@ -44,16 +45,36 @@ export interface CartItem {
 
 export const cartItemValue = (item: CartItem) => item.menuItem.price * item.quantity;
 
-export interface OrderRequest {
-  address: string;
+export type DeliveryType = 'DELIVERY' | 'PICKUP';
+export type PaymentTiming = 'ONLINE' | 'ON_DELIVERY';
+export type PaymentMethod = 'PIX' | 'CREDIT' | 'DEBIT' | 'CASH' | 'MEAL_VOUCHER';
+
+export interface DeliveryAddress {
+  street: string;
   number: string;
-  optionalAddress?: string;
-  paymentOption: string;
+  complement?: string;
+}
+
+export interface PaymentRequest {
+  timing: PaymentTiming;
+  method: PaymentMethod;
+  changeFor?: number;
+  card?: { brand: string; last4: string };
+}
+
+export interface OrderRequest {
+  deliveryType: DeliveryType;
+  address?: DeliveryAddress;
+  payment: PaymentRequest;
   orderItems: { menuId: string; quantity: number }[];
 }
 
 export interface Order extends OrderRequest {
   id: string;
+  restaurantId: string;
+  payment: PaymentRequest & { status: 'PAID' | 'PENDING' };
+  itemsValue: number;
+  deliveryFee: number;
   total: number;
   userEmail: string;
   createdAt: string;

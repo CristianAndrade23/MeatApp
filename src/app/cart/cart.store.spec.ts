@@ -76,6 +76,24 @@ describe('CartStore', () => {
     expect(restored.items()).toEqual([{ menuItem: bread, quantity: 1 }]);
   });
 
+  describe('itens de outro restaurante', () => {
+    const burger: MenuItem = { ...donut, id: 'burger', name: 'Burger', restaurantId: 'burger-house' };
+
+    it('mantém o carrinho se o usuário desistir', () => {
+      cart.add(donut);
+      expect(cart.add(burger, () => false)).toBe(false);
+      expect(cart.items().map((i) => i.menuItem.id)).toEqual(['donut']);
+      expect(cart.restaurantId()).toBe('bread-bakery');
+    });
+
+    it('esvazia e adiciona se o usuário confirmar', () => {
+      cart.add(donut);
+      expect(cart.add(burger, () => true)).toBe(true);
+      expect(cart.items().map((i) => i.menuItem.id)).toEqual(['burger']);
+      expect(cart.restaurantId()).toBe('burger-house');
+    });
+  });
+
   it('ignora dados inválidos no localStorage', () => {
     localStorage.setItem('meat.cart', '{"quebrado":');
     TestBed.resetTestingModule();

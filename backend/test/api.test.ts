@@ -98,15 +98,17 @@ describe('login', () => {
 });
 
 describe('pedidos', () => {
+  // 2 x Cup Cake (8,70) + 1 x Donut (2,50) = 19,90 em itens, ambos da Bread & Bakery.
   const validOrder = {
-    address: 'Rua das Flores',
-    number: '123',
-    paymentOption: 'DEB',
+    deliveryType: 'DELIVERY',
+    address: { street: 'Rua das Flores', number: '123' },
+    payment: { timing: 'ON_DELIVERY', method: 'DEBIT' },
     orderItems: [
       { menuId: 'cup-cake', quantity: 2 },
       { menuId: 'donut', quantity: 1 },
     ],
   };
+  type Body = Record<string, unknown>;
 
   it('exige autenticação', async () => {
     const res = await post('/orders', validOrder);
@@ -118,25 +120,72 @@ describe('pedidos', () => {
     assert.equal(res.status, 401);
   });
 
-  it('cria o pedido calculando o total no servidor', async () => {
+  it('cria pedido para entrega calculando o total no servidor', async () => {
     const res = await post('/orders', { ...validOrder, total: 0.01 }, await login());
     assert.equal(res.status, 201);
-    const order = (await res.json()) as Record<string, unknown>;
-    assert.equal(order['total'], 8.7 * 2 + 2.5 + DELIVERY_FEE);
+    const order = (await res.json()) as Body;
+    assert.equal(order['restaurantId'], 'bread-bakery');
+    assert.equal(order['itemsValue'], 19.9);
+    assert.equal(order['deliveryFee'], DELIVERY_FEE);
+    assert.equal(order['total'], 19.9 + DELIVERY_FEE);
+    assert.deepEqual(order['payment'], { timing: 'ON_DELIVERY', method: 'DEBIT', status: 'PENDING' });
     assert.equal(order['userEmail'], 'juliana@gmail.com');
-    assert.ok(order['id']);
 
-    const saved = JSON.parse(await readFile(dbFile, 'utf8')) as { orders: { id: string }[] };
-    assert.ok(saved.orders.some((o) => o.id === order['id']));
+    const saved = JSON.parse(await readFile(dbFile, 'utf8')) as Body;
+    assert.deepEqual(Object.keys(saved), ['orders'], 'o banco guarda só os pedidos');
+    assert.ok((saved['orders'] as Body[]).some((o) => o['id'] === order['id']));
+  });
+
+  it('retirada na loja não cobra frete nem exige endereço', async () => {
+    const { address: _, ...pickup } = validOrder;
+    const res = await post('/orders', { ...pickup, deliveryType: 'PICKUP' }, await login());
+    assert.equal(res.status, 201);
+    const order = (await res.json()) as Body;
+    assert.equal(order['deliveryFee'], 0);
+    assert.equal(order['total'], 19.9);
+    assert.equal(order['address'], undefined);
+  });
+
+  it('pagamento online com cartão fica aprovado e guarda só bandeira e final', async () => {
+    const payment = {
+      timing: 'ONLINE',
+      method: 'CREDIT',
+      card: { brand: 'Visa', last4: '1111', number: '4111111111111111' },
+    };
+    const res = await post('/orders', { ...validOrder, payment }, await login());
+    assert.equal(res.status, 201);
+    const order = (await res.json()) as Body;
+    assert.deepEqual(order['payment'], {
+      timing: 'ONLINE',
+      method: 'CREDIT',
+      status: 'PAID',
+      card: { brand: 'Visa', last4: '1111' },
+    });
+  });
+
+  it('aceita troco para dinheiro na entrega', async () => {
+    const payment = { timing: 'ON_DELIVERY', method: 'CASH', changeFor: 50 };
+    const res = await post('/orders', { ...validOrder, payment }, await login());
+    assert.equal(res.status, 201);
+    assert.equal(((await res.json()) as { payment: Body }).payment['changeFor'], 50);
   });
 
   for (const [caso, override] of [
-    ['endereço curto', { address: 'Rua' }],
-    ['número não numérico', { number: '12a' }],
-    ['pagamento desconhecido', { paymentOption: 'PIX' }],
+    ['tipo de entrega desconhecido', { deliveryType: 'DRONE' }],
+    ['entrega sem endereço', { address: undefined }],
+    ['endereço curto', { address: { street: 'Rua', number: '1' } }],
+    ['número não numérico', { address: { street: 'Rua das Flores', number: '12a' } }],
+    ['pix na entrega', { payment: { timing: 'ON_DELIVERY', method: 'PIX' } }],
+    ['dinheiro online', { payment: { timing: 'ONLINE', method: 'CASH' } }],
+    ['cartão online sem dados', { payment: { timing: 'ONLINE', method: 'CREDIT' } }],
+    ['troco menor que o total', { payment: { timing: 'ON_DELIVERY', method: 'CASH', changeFor: 20 } }],
     ['sem itens', { orderItems: [] }],
     ['item inexistente', { orderItems: [{ menuId: 'x', quantity: 1 }] }],
     ['quantidade zero', { orderItems: [{ menuId: 'donut', quantity: 0 }] }],
+    [
+      'itens de restaurantes diferentes',
+      { orderItems: [{ menuId: 'donut', quantity: 1 }, { menuId: 'burger', quantity: 1 }] },
+    ],
   ] as const) {
     it(`recusa pedido com ${caso}`, async () => {
       const res = await post('/orders', { ...validOrder, ...override }, await login());

@@ -27,12 +27,27 @@ export class CartStore {
   readonly total = computed(() => this._items().reduce((sum, i) => sum + cartItemValue(i), 0));
   readonly count = computed(() => this._items().reduce((sum, i) => sum + i.quantity, 0));
   readonly isEmpty = computed(() => this._items().length === 0);
+  /** O carrinho só tem itens de um restaurante, para o pedido poder ser retirado na loja. */
+  readonly restaurantId = computed(() => this._items()[0]?.menuItem.restaurantId);
 
   constructor() {
     effect(() => writeJson(localStorage, STORAGE_KEY, this._items()));
   }
 
-  add(menuItem: MenuItem) {
+  /**
+   * Adiciona o item. Se o carrinho tiver itens de outro restaurante, pergunta antes de esvaziá-lo.
+   * Retorna `false` se o usuário desistir.
+   */
+  add(menuItem: MenuItem, confirmReplace = (msg: string) => window.confirm(msg)): boolean {
+    const current = this.restaurantId();
+    if (current && current !== menuItem.restaurantId) {
+      const replace = confirmReplace(
+        'Seu carrinho tem itens de outro restaurante. Deseja esvaziá-lo e adicionar este item?',
+      );
+      if (!replace) return false;
+      this._items.set([]);
+    }
+
     const exists = this._items().some((i) => i.menuItem.id === menuItem.id);
     this._items.update((items) =>
       exists
@@ -40,6 +55,7 @@ export class CartStore {
         : [...items, { menuItem, quantity: 1 }],
     );
     this.notifications.notify(`Você adicionou o item ${menuItem.name}`);
+    return true;
   }
 
   increase(item: CartItem) {

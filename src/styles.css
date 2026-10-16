@@ -3,6 +3,7 @@
 :root {
   --brand: #dd4b39;
   --brand-dark: #c23321;
+  --brand-soft: #fdf1ef;
   --success: #00a65a;
   --success-dark: #008d4c;
   --primary: #3c8dbc;
@@ -233,6 +234,15 @@ mt-menu-item {
 }
 .btn-primary:not(:disabled):hover {
   background: var(--primary-dark);
+}
+
+.btn-default {
+  background: var(--surface-muted);
+  border-color: #ddd;
+  color: var(--text);
+}
+.btn-default:not(:disabled):hover {
+  background: #e7e7e7;
 }
 
 .btn-success {
