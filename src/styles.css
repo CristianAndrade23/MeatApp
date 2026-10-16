@@ -80,8 +80,13 @@ img {
 .main-footer {
   background: var(--surface);
   border-top: 1px solid #d2d6de;
-  padding: 1.5rem 0;
-  color: var(--text);
+  padding: 0.6rem 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.main-footer a {
+  color: inherit;
 }
 
 .main-footer .container {

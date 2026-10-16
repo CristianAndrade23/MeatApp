@@ -41,10 +41,5 @@ export const routes: Routes = [
     loadComponent: () => import('./security/login').then((m) => m.Login),
     title: 'Entrar | Meat',
   },
-  {
-    path: 'about',
-    loadComponent: () => import('./pages/about').then((m) => m.About),
-    title: 'Sobre | Meat',
-  },
   { path: '**', component: NotFound, title: 'Página não encontrada | Meat' },
 ];

@@ -17,8 +17,10 @@ import { Snackbar } from './layout/snackbar';
 
     <footer class="main-footer">
       <div class="container">
-        <strong>Meat</strong> Angular Application
-        <span class="version"><b>Versão</b> 2.0.0</span>
+        <span><strong>Meat</strong> · v2.0.0</span>
+        <span>
+          Imagens por <a href="https://www.freepik.com" target="_blank" rel="noopener">freepik.com</a>
+        </span>
       </div>
     </footer>
   `,

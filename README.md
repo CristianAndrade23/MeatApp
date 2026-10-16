@@ -29,7 +29,7 @@ O código da versão original continua acessível pela tag [`v1-angular4`](../..
 - Frete e total recalculados no servidor a partir dos preços do cardápio
 - Resumo do pedido com avaliação por estrelas
 - Notificações (snackbar), tratamento centralizado de erros HTTP e página 404
-- Lazy loading das rotas de pedido, login e sobre
+- Lazy loading das rotas de sacola, pedido e login
 
 ## Requisitos
 
@@ -74,11 +74,11 @@ Em produção, defina `JWT_SECRET` (obrigatório com `NODE_ENV=production`) e, o
 src/app/
   core/               modelos, autenticação, interceptors HTTP, notificações
   layout/             header e snackbar
-  pages/              home, sobre, 404
+  pages/              home e 404
   restaurants/        lista de restaurantes
   restaurant-detail/  detalhe, cardápio e avaliações
-  cart/               store do carrinho (signals) e carrinho lateral
-  order/              checkout, itens, frete, resumo e guard de saída
+  cart/               store da sacola (signals), página da sacola e sacola lateral
+  order/              checkout em etapas, rascunho, regras de pagamento e resumo
   security/           login
   shared/             input com validação, radio e rating
 backend/

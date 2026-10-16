@@ -25,7 +25,6 @@ import { CartStore } from '../cart/cart.store';
         <div id="navbar-links" class="navbar-links" [class.open]="menuOpen()" (click)="menuOpen.set(false)">
           <ul>
             <li><a routerLink="/restaurants" routerLinkActive="active">Restaurantes</a></li>
-            <li><a routerLink="/about" routerLinkActive="active">Sobre</a></li>
           </ul>
 
           <ul class="navbar-right">
