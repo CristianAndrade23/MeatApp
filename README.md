@@ -189,7 +189,7 @@ Em produção, defina a variável `JWT_SECRET` (obrigatória com `NODE_ENV=produ
 
 ## História do projeto
 
-O Meat começou em 2019, durante o curso de Angular da [COD3R](https://www.cod3r.com.br), em Angular 4 com AdminLTE e `json-server`. Em 2026 foi reescrito do zero com Angular 22 e ganhou o que o curso não chegou a cobrir: backend próprio, login, checkout completo e testes.
+A primeira versão do Meat foi feita em 2019, em Angular 4 com AdminLTE e `json-server`. Em 2026 o app foi reescrito do zero com Angular 22 e ganhou backend próprio, login, checkout completo e testes.
 
 | | Versão 1 (2019) | Versão 2 (2026) |
 |---|---|---|
@@ -198,7 +198,7 @@ O Meat começou em 2019, durante o curso de Angular da [COD3R](https://www.cod3r
 | Backend | `json-server` | Express 5 + JWT |
 | Testes | Karma + Jasmine + Protractor (gerados, sem uso) | Vitest, `node:test` e Cypress, rodando no CI |
 
-A versão original está preservada na tag [`v1-angular4`](https://github.com/CristianAndrade23/MeatApp/tree/v1-angular4). A reescrita está documentada nos [pull requests](https://github.com/CristianAndrade23/MeatApp/pulls?q=is%3Apr+is%3Amerged).
+A reescrita está documentada nos [pull requests](https://github.com/CristianAndrade23/MeatApp/pulls?q=is%3Apr+is%3Amerged).
 
 ## Licença e créditos
 
