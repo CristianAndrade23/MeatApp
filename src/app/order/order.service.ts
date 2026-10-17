@@ -1,29 +1,18 @@
-import {Injectable} from '@angular/core';
-import {ShoppingCartService} from '../restaurant-detail/shopping-cart/shopping-cart.service';
-import {CartItem} from '../restaurant-detail/shopping-cart/cart-item.model';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable, signal } from '@angular/core';
+import { Observable, tap } from 'rxjs';
+import { API_URL, Order, OrderRequest } from '../core/models';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class OrderService {
+  private readonly http = inject(HttpClient);
 
-  constructor(private cartService: ShoppingCartService){}
+  /** Último pedido realizado nesta sessão, exibido no resumo. */
+  readonly lastOrder = signal<Order | undefined>(undefined);
 
-  itemsValue(): number {
-    return  this.cartService.total();
-  }
-
-  cartItems(): CartItem[] {
-    return this.cartService.itens;
-  }
-
-  incrementaQtd(item: CartItem){
-    this.cartService.incrementaQtd(item);
-  }
-
-  decrementaQtd(item: CartItem){
-    this.cartService.decrementaQtd(item);
-  }
-
-  remove(item: CartItem){
-    this.cartService.removeItem(item);
+  checkOrder(order: OrderRequest): Observable<Order> {
+    return this.http
+      .post<Order>(`${API_URL}/orders`, order)
+      .pipe(tap((created) => this.lastOrder.set(created)));
   }
 }

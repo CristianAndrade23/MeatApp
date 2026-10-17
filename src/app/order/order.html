@@ -1,0 +1,246 @@
+@if (cart.isEmpty()) {
+  <section class="box empty-cart">
+    <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+    <h1>Sua sacola está vazia</h1>
+    <p>Que tal escolher algo nos <a routerLink="/restaurants">restaurantes</a>?</p>
+  </section>
+} @else {
+  <div class="checkout">
+    <section class="box checkout-main">
+      <h1 class="page-header"><i class="fa-solid fa-cart-shopping"></i> Finalize o seu pedido</h1>
+
+      <ol class="stepper">
+        <li class="done">
+          <a routerLink="/cart" title="Voltar à sacola">
+            <span class="step-number" aria-hidden="true"><i class="fa-solid fa-bag-shopping"></i></span>
+            <span class="step-label">Sacola</span>
+          </a>
+        </li>
+        @for (s of steps; track s.n) {
+          <li [class.done]="step() > s.n" [class.current]="step() === s.n">
+            <button
+              type="button"
+              [disabled]="s.n > maxStep()"
+              [attr.aria-current]="step() === s.n ? 'step' : null"
+              (click)="goTo(s.n)"
+            >
+              <span class="step-number" aria-hidden="true">
+                @if (step() > s.n) {
+                  <i class="fa-solid fa-check"></i>
+                } @else {
+                  {{ s.n }}
+                }
+              </span>
+              <span class="step-label">{{ s.label }}</span>
+            </button>
+          </li>
+        }
+      </ol>
+
+      <form [formRoot]="checkoutForm">
+        @switch (step()) {
+          @case (1) {
+            <section animate.enter="fade-in">
+              <h2 id="step-title" class="step-title" tabindex="-1">Como você quer receber?</h2>
+              <mt-radio layout="cards" [options]="deliveryOptions" [formField]="checkoutForm.deliveryType" />
+              @if (checkoutForm.deliveryType().touched() && checkoutForm.deliveryType().invalid()) {
+                <p class="help-block has-error" role="alert">
+                  <i class="fa-solid fa-xmark"></i> {{ checkoutForm.deliveryType().errors()[0].message }}
+                </p>
+              }
+
+              @if (model().deliveryType === 'DELIVERY') {
+                <fieldset class="step-section" animate.enter="fade-in">
+                  <legend class="lead">Endereço de entrega</legend>
+                  <div class="address-grid">
+                    <mt-input-container class="span-2" [field]="checkoutForm.address.street" label="Endereço" for="street">
+                      <input id="street" class="form-control" placeholder="Rua, avenida..." autocomplete="street-address"
+                             [formField]="checkoutForm.address.street" />
+                    </mt-input-container>
+                    <mt-input-container [field]="checkoutForm.address.number" label="Número" for="number">
+                      <input id="number" class="form-control" inputmode="numeric" autocomplete="off"
+                             [formField]="checkoutForm.address.number" />
+                    </mt-input-container>
+                    <mt-input-container [field]="checkoutForm.address.complement" label="Complemento (opcional)" for="complement">
+                      <input id="complement" class="form-control" placeholder="Apto, bloco..." autocomplete="off"
+                             [formField]="checkoutForm.address.complement" />
+                    </mt-input-container>
+                  </div>
+                  @if (restaurant.value(); as r) {
+                    <p class="hint"><i class="fa-regular fa-clock"></i> Entrega estimada em {{ r.deliveryEstimate }}.</p>
+                  }
+                </fieldset>
+              } @else if (model().deliveryType === 'PICKUP') {
+                <div class="step-section pickup" animate.enter="fade-in">
+                  @if (restaurant.value(); as r) {
+                    <p class="lead"><i class="fa-solid fa-location-dot"></i> Retire em <strong>{{ r.name }}</strong></p>
+                    <p>{{ r.address }}</p>
+                    @if (r.hours) {
+                      <p class="hint"><i class="fa-regular fa-clock"></i> {{ r.hours }}</p>
+                    }
+                  }
+                </div>
+              }
+            </section>
+          }
+
+          @case (2) {
+            <section animate.enter="fade-in">
+              <h2 id="step-title" class="step-title" tabindex="-1">Quando você quer pagar?</h2>
+              <mt-radio layout="cards" [options]="timingOptions()" [formField]="checkoutForm.payment.timing" />
+              @if (checkoutForm.payment.timing().touched() && checkoutForm.payment.timing().invalid()) {
+                <p class="help-block has-error" role="alert">
+                  <i class="fa-solid fa-xmark"></i> {{ checkoutForm.payment.timing().errors()[0].message }}
+                </p>
+              }
+
+              @if (model().payment.timing) {
+                <fieldset class="step-section" animate.enter="fade-in">
+                  <legend class="lead">Forma de pagamento</legend>
+                  <mt-radio layout="cards" [options]="methodOptions()" [formField]="checkoutForm.payment.method" />
+                  @if (checkoutForm.payment.method().touched() && checkoutForm.payment.method().invalid()) {
+                    <p class="help-block has-error" role="alert">
+                      <i class="fa-solid fa-xmark"></i> {{ checkoutForm.payment.method().errors()[0].message }}
+                    </p>
+                  }
+                </fieldset>
+              }
+
+              @if (model().payment.timing === 'ONLINE' && model().payment.method === 'CREDIT') {
+                <fieldset class="step-section" animate.enter="fade-in">
+                  <legend class="lead">Dados do cartão</legend>
+                  <div class="card-grid">
+                    <mt-input-container class="span-2" [field]="checkoutForm.payment.card.number" label="Número do cartão" for="card-number">
+                      <div class="card-number">
+                        <input id="card-number" class="form-control" inputmode="numeric" autocomplete="cc-number"
+                               placeholder="0000 0000 0000 0000"
+                               [formField]="checkoutForm.payment.card.number" />
+                        @if (cardBrand(); as brand) {
+                          <img [src]="brand.image" [alt]="brand.name" height="24" />
+                        }
+                      </div>
+                    </mt-input-container>
+                    <mt-input-container class="span-2" [field]="checkoutForm.payment.card.name" label="Nome impresso no cartão" for="card-name">
+                      <input id="card-name" class="form-control" autocomplete="cc-name"
+                             [formField]="checkoutForm.payment.card.name" />
+                    </mt-input-container>
+                    <mt-input-container [field]="checkoutForm.payment.card.expiry" label="Validade" for="card-expiry">
+                      <input id="card-expiry" class="form-control" inputmode="numeric" autocomplete="cc-exp"
+                             placeholder="MM/AA" [formField]="checkoutForm.payment.card.expiry" />
+                    </mt-input-container>
+                    <mt-input-container [field]="checkoutForm.payment.card.cvv" label="CVV" for="card-cvv">
+                      <input id="card-cvv" class="form-control" inputmode="numeric" autocomplete="cc-csc"
+                             [formField]="checkoutForm.payment.card.cvv" />
+                    </mt-input-container>
+                  </div>
+                </fieldset>
+              }
+
+              @if (model().payment.timing === 'ONLINE' && model().payment.method) {
+                <p class="notice">
+                  <i class="fa-solid fa-circle-info"></i>
+                  Ambiente de demonstração: o pagamento online é simulado e aprovado na hora.
+                  @if (model().payment.method === 'CREDIT') {
+                    Os dados do cartão não saem do seu navegador: enviamos só a bandeira e os 4 últimos dígitos.
+                  }
+                </p>
+              }
+
+              @if (model().payment.method === 'CASH') {
+                <div class="step-section change-for" animate.enter="fade-in">
+                  <mt-input-container [field]="checkoutForm.payment.changeFor" label="Troco para quanto? (opcional)" for="change-for">
+                    <input id="change-for" class="form-control" inputmode="decimal" placeholder="Ex.: 50,00"
+                           autocomplete="off" [formField]="checkoutForm.payment.changeFor" />
+                  </mt-input-container>
+                </div>
+              }
+            </section>
+          }
+
+          @case (3) {
+            <section animate.enter="fade-in">
+              <h2 id="step-title" class="step-title" tabindex="-1">Revise o seu pedido</h2>
+
+              <dl class="review">
+                <div class="review-row">
+                  <dt><i class="fa-solid fa-truck-fast"></i> Entrega</dt>
+                  <dd>
+                    @if (model().deliveryType === 'DELIVERY') {
+                      Entregar em {{ model().address.street }}, {{ model().address.number }}
+                      @if (model().address.complement) { - {{ model().address.complement }} }
+                    } @else {
+                      Retirar na loja{{ restaurant.value() ? ': ' + restaurant.value()!.address : '' }}
+                    }
+                  </dd>
+                  <button type="button" class="link-button" (click)="goTo(1)">Alterar</button>
+                </div>
+                <div class="review-row">
+                  <dt><i class="fa-solid fa-wallet"></i> Pagamento</dt>
+                  <dd>{{ paymentSummary() }}</dd>
+                  <button type="button" class="link-button" (click)="goTo(2)">Alterar</button>
+                </div>
+              </dl>
+
+              <h3 class="lead">Itens do pedido</h3>
+              <mt-order-items
+                [items]="cart.items()"
+                (increase)="cart.increase($event)"
+                (decrease)="cart.decrease($event)"
+                (remove)="cart.remove($event)"
+              />
+            </section>
+          }
+        }
+
+        <div class="form-actions">
+          @if (step() > 1) {
+            <button type="button" class="btn btn-default" (click)="back()">
+              <i class="fa-solid fa-arrow-left"></i> Voltar
+            </button>
+          } @else {
+            <a class="btn btn-default" routerLink="/cart">
+              <i class="fa-solid fa-arrow-left"></i> Voltar à sacola
+            </a>
+          }
+          @if (step() < 3) {
+            <button type="button" class="btn btn-primary" (click)="next()">
+              Continuar <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          } @else {
+            <button type="submit" class="btn btn-success" [disabled]="checkoutForm().submitting()">
+              @if (checkoutForm().submitting()) {
+                <i class="fa-solid fa-spinner fa-spin"></i> Enviando...
+              } @else {
+                <i class="fa-solid fa-check"></i> Confirmar pedido · {{ total() | currency }}
+              }
+            </button>
+          }
+        </div>
+      </form>
+    </section>
+
+    <aside class="box checkout-summary" aria-label="Resumo do pedido">
+      <header class="summary-header">
+        <h2 class="box-title">Resumo do pedido</h2>
+        <a routerLink="/cart" aria-label="Editar sacola"><i class="fa-solid fa-pen"></i> Editar</a>
+      </header>
+      @if (restaurant.value(); as r) {
+        <p class="summary-restaurant"><i class="fa-solid fa-store"></i> {{ r.name }}</p>
+      }
+      <ul class="summary-items">
+        @for (item of cart.items(); track item.key) {
+          <li>
+            <span>
+              {{ item.quantity }}x {{ item.menuItem.name }}
+              @if (item.options.length) {
+                <small class="summary-details">{{ details(item) }}</small>
+              }
+            </span>
+            <span>{{ itemValue(item) | currency }}</span>
+          </li>
+        }
+      </ul>
+      <mt-delivery-costs [delivery]="deliveryFee()" [itemsValue]="cart.total()" />
+    </aside>
+  </div>
+}

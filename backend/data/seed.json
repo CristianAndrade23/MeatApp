@@ -1,0 +1,968 @@
+{
+  "restaurants": [
+    {
+      "id": "bread-bakery",
+      "name": "Bread & Bakery",
+      "category": "Bakery",
+      "deliveryEstimate": "25m",
+      "rating": 4.9,
+      "imagePath": "assets/img/restaurants/breadbakery.png",
+      "address": "Rua das Padarias, 120 - Centro",
+      "about": "A Bread & Brakery tem 40 anos de mercado. Fazemos os melhores doces e pães. Compre e confira.",
+      "hours": "Funciona de segunda à sexta, de 8h às 23h"
+    },
+    {
+      "id": "burger-house",
+      "name": "Burger House",
+      "category": "Hamburgers",
+      "deliveryEstimate": "100m",
+      "rating": 3.5,
+      "imagePath": "assets/img/restaurants/burgerhouse.png",
+      "address": "Av. dos Hambúrgueres, 1500 - Vila Nova",
+      "about": "40 anos se especializando em trash food.",
+      "hours": "Funciona todos os dias, de 10h às 22h"
+    },
+    {
+      "id": "coffee-corner",
+      "name": "Coffee Corner",
+      "category": "Coffee Shop",
+      "deliveryEstimate": "30-40m",
+      "rating": 4.8,
+      "imagePath": "assets/img/restaurants/coffeecorner.png",
+      "address": "Rua do Café, 45 - Jardim América",
+      "about": "A Coffe Corner foi eleita a melhor cafeteria da cidade.",
+      "hours": "Funciona de segunda à sábado, de 6h às 22h"
+    },
+    {
+      "id": "green-food",
+      "name": "Green Food",
+      "category": "Saudável",
+      "deliveryEstimate": "75m",
+      "rating": 4.1,
+      "imagePath": "assets/img/restaurants/greenfood.png",
+      "address": "Rua Verde, 300 - Bela Vista",
+      "about": "Comida saudável é no Green Food. Compramos barato, vendemos caro. ;)",
+      "hours": "Somente em horário de almoço, das 11h às 15h"
+    },
+    {
+      "id": "ice-cream",
+      "name": "Ice Cream",
+      "category": "Ice Creams",
+      "deliveryEstimate": "40-65m",
+      "rating": 4.5,
+      "imagePath": "assets/img/restaurants/icy.png",
+      "address": "Av. Gelada, 88 - Centro",
+      "about": "A Ice Cream é uma sorveteria inovadora.",
+      "hours": "Funciona todos os dias, de 10h às 1h"
+    },
+    {
+      "id": "tasty-treats",
+      "name": "Tasty Treats",
+      "category": "Doces",
+      "deliveryEstimate": "20m",
+      "rating": 4.4,
+      "imagePath": "assets/img/restaurants/tasty.png",
+      "address": "Rua dos Doces, 210 - Vila Mariana",
+      "about": "A doceria com mais tradição da cidade",
+      "hours": "Funciona de segunda à sábado, de 8h às 23h"
+    }
+  ],
+  "menu": [
+    {
+      "id": "cup-cake",
+      "imagePath": "assets/img/foods/cupcake.png",
+      "name": "Cup Cake",
+      "description": "Cup Cake recheado de Doce de Leite",
+      "price": 8.7,
+      "restaurantId": "bread-bakery",
+      "options": [
+        {
+          "id": "cobertura-extra",
+          "name": "Cobertura extra",
+          "min": 0,
+          "max": 1,
+          "options": [
+            {
+              "id": "granulado",
+              "name": "Granulado",
+              "price": 1
+            },
+            {
+              "id": "confeitos-coloridos",
+              "name": "Confeitos coloridos",
+              "price": 1.5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "donut",
+      "imagePath": "assets/img/foods/donut.png",
+      "name": "Donut",
+      "description": "Coberto com chantilly",
+      "price": 2.5,
+      "restaurantId": "bread-bakery",
+      "options": [
+        {
+          "id": "recheio",
+          "name": "Recheio",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "doce-de-leite",
+              "name": "Doce de leite",
+              "price": 0
+            },
+            {
+              "id": "chocolate",
+              "name": "Chocolate",
+              "price": 0
+            },
+            {
+              "id": "morango",
+              "name": "Morango",
+              "price": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bread",
+      "imagePath": "assets/img/foods/bread.png",
+      "name": "Pão Artesanal Italiano",
+      "description": "Pão artesanal com queijos italianos",
+      "price": 15.9,
+      "restaurantId": "bread-bakery"
+    },
+    {
+      "id": "burger",
+      "imagePath": "assets/img/foods/burger.png",
+      "name": "Classic Burger",
+      "description": "O clássico. Não tem como errar.",
+      "price": 18.5,
+      "restaurantId": "burger-house",
+      "options": [
+        {
+          "id": "ponto-da-carne",
+          "name": "Ponto da carne",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "mal-passado",
+              "name": "Mal passado",
+              "price": 0
+            },
+            {
+              "id": "ao-ponto",
+              "name": "Ao ponto",
+              "price": 0
+            },
+            {
+              "id": "bem-passado",
+              "name": "Bem passado",
+              "price": 0
+            }
+          ]
+        },
+        {
+          "id": "adicionais",
+          "name": "Adicionais",
+          "min": 0,
+          "max": 3,
+          "options": [
+            {
+              "id": "bacon",
+              "name": "Bacon",
+              "price": 4
+            },
+            {
+              "id": "queijo-extra",
+              "name": "Queijo extra",
+              "price": 3
+            },
+            {
+              "id": "ovo",
+              "name": "Ovo",
+              "price": 2.5
+            },
+            {
+              "id": "cebola-caramelizada",
+              "name": "Cebola caramelizada",
+              "price": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fries",
+      "imagePath": "assets/img/foods/fries.png",
+      "name": "Batatas Fritas",
+      "description": "Batatas fritas crocantes",
+      "price": 5.5,
+      "restaurantId": "burger-house",
+      "options": [
+        {
+          "id": "tamanho",
+          "name": "Tamanho",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "pequena",
+              "name": "Pequena",
+              "price": 0
+            },
+            {
+              "id": "media",
+              "name": "Média",
+              "price": 2
+            },
+            {
+              "id": "grande",
+              "name": "Grande",
+              "price": 4
+            }
+          ]
+        },
+        {
+          "id": "molhos",
+          "name": "Molhos",
+          "min": 0,
+          "max": 2,
+          "options": [
+            {
+              "id": "cheddar",
+              "name": "Cheddar",
+              "price": 3
+            },
+            {
+              "id": "barbecue",
+              "name": "Barbecue",
+              "price": 2
+            },
+            {
+              "id": "maionese-da-casa",
+              "name": "Maionese da casa",
+              "price": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "coke.png",
+      "imagePath": "assets/img/foods/coke.png",
+      "name": "Refrigerante",
+      "description": "O refri mais gelado da cidade.",
+      "price": 4.5,
+      "restaurantId": "burger-house",
+      "options": [
+        {
+          "id": "sabor",
+          "name": "Sabor",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "coca-cola",
+              "name": "Coca-Cola",
+              "price": 0
+            },
+            {
+              "id": "guarana",
+              "name": "Guaraná",
+              "price": 0
+            },
+            {
+              "id": "laranja",
+              "name": "Laranja",
+              "price": 0
+            }
+          ]
+        },
+        {
+          "id": "gelo-e-limao",
+          "name": "Gelo e limão",
+          "min": 0,
+          "max": 2,
+          "options": [
+            {
+              "id": "com-gelo",
+              "name": "Com gelo",
+              "price": 0
+            },
+            {
+              "id": "com-limao",
+              "name": "Com limão",
+              "price": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "capp",
+      "imagePath": "assets/img/foods/capp.png",
+      "name": "Cappuccino com Chantilly",
+      "description": "Tradicional cappuccino com chantilly",
+      "price": 9.9,
+      "restaurantId": "coffee-corner",
+      "options": [
+        {
+          "id": "tamanho",
+          "name": "Tamanho",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "pequeno",
+              "name": "Pequeno",
+              "price": 0
+            },
+            {
+              "id": "medio",
+              "name": "Médio",
+              "price": 3
+            },
+            {
+              "id": "grande",
+              "name": "Grande",
+              "price": 5
+            }
+          ]
+        },
+        {
+          "id": "leite",
+          "name": "Leite",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "integral",
+              "name": "Integral",
+              "price": 0
+            },
+            {
+              "id": "desnatado",
+              "name": "Desnatado",
+              "price": 0
+            },
+            {
+              "id": "vegetal",
+              "name": "Vegetal",
+              "price": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "espreso",
+      "imagePath": "assets/img/foods/espreso.png",
+      "name": "Super Espreso",
+      "description": "Café espresso duplo. ",
+      "price": 12.5,
+      "restaurantId": "coffee-corner",
+      "options": [
+        {
+          "id": "dose",
+          "name": "Dose",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "simples",
+              "name": "Simples",
+              "price": 0
+            },
+            {
+              "id": "dupla",
+              "name": "Dupla",
+              "price": 4.5
+            }
+          ]
+        },
+        {
+          "id": "acucar",
+          "name": "Açúcar",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "sem-acucar",
+              "name": "Sem açúcar",
+              "price": 0
+            },
+            {
+              "id": "acucar",
+              "name": "Açúcar",
+              "price": 0
+            },
+            {
+              "id": "adocante",
+              "name": "Adoçante",
+              "price": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "starb",
+      "imagePath": "assets/img/foods/starb.png",
+      "name": "Starbucks Copycat",
+      "description": "O mais pedido da casa. O verdadeiro café americano pura água.",
+      "price": 15.6,
+      "restaurantId": "coffee-corner",
+      "options": [
+        {
+          "id": "tamanho",
+          "name": "Tamanho",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "pequeno",
+              "name": "Pequeno",
+              "price": 0
+            },
+            {
+              "id": "medio",
+              "name": "Médio",
+              "price": 3
+            },
+            {
+              "id": "grande",
+              "name": "Grande",
+              "price": 5
+            }
+          ]
+        },
+        {
+          "id": "adicionais",
+          "name": "Adicionais",
+          "min": 0,
+          "max": 2,
+          "options": [
+            {
+              "id": "chantilly-extra",
+              "name": "Chantilly extra",
+              "price": 2
+            },
+            {
+              "id": "calda-de-caramelo",
+              "name": "Calda de caramelo",
+              "price": 2.5
+            },
+            {
+              "id": "dose-extra-de-cafe",
+              "name": "Dose extra de café",
+              "price": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zlasagna",
+      "imagePath": "assets/img/foods/zlasagna.png",
+      "name": "Lasagna de Zucchini",
+      "description": "Lasagna deliciosa que se salva por causa do queijo",
+      "price": 14.9,
+      "restaurantId": "green-food",
+      "options": [
+        {
+          "id": "acompanhamentos",
+          "name": "Acompanhamentos",
+          "min": 0,
+          "max": 2,
+          "options": [
+            {
+              "id": "queijo-extra",
+              "name": "Queijo extra",
+              "price": 4
+            },
+            {
+              "id": "pao-de-alho",
+              "name": "Pão de alho",
+              "price": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "greensandwich",
+      "imagePath": "assets/img/foods/greensandwich.png",
+      "name": "Sanduíche de Frango",
+      "description": "Frango grelhado e salada",
+      "price": 10.5,
+      "restaurantId": "green-food",
+      "options": [
+        {
+          "id": "pao",
+          "name": "Pão",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "integral",
+              "name": "Integral",
+              "price": 0
+            },
+            {
+              "id": "frances",
+              "name": "Francês",
+              "price": 0
+            },
+            {
+              "id": "sirio",
+              "name": "Sírio",
+              "price": 0
+            }
+          ]
+        },
+        {
+          "id": "adicionais",
+          "name": "Adicionais",
+          "min": 0,
+          "max": 3,
+          "options": [
+            {
+              "id": "bacon",
+              "name": "Bacon",
+              "price": 4
+            },
+            {
+              "id": "queijo",
+              "name": "Queijo",
+              "price": 3
+            },
+            {
+              "id": "abacate",
+              "name": "Abacate",
+              "price": 3.5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ceasar",
+      "imagePath": "assets/img/foods/ceasar.png",
+      "name": "Salada Ceasar",
+      "description": "Clássica salada ceasar.",
+      "price": 33.9,
+      "restaurantId": "green-food",
+      "options": [
+        {
+          "id": "proteina",
+          "name": "Proteína",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "frango-grelhado",
+              "name": "Frango grelhado",
+              "price": 0
+            },
+            {
+              "id": "tofu",
+              "name": "Tofu",
+              "price": 0
+            },
+            {
+              "id": "camarao",
+              "name": "Camarão",
+              "price": 12
+            }
+          ]
+        },
+        {
+          "id": "molho",
+          "name": "Molho",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "caesar",
+              "name": "Caesar",
+              "price": 0
+            },
+            {
+              "id": "mostarda-e-mel",
+              "name": "Mostarda e mel",
+              "price": 0
+            },
+            {
+              "id": "sem-molho",
+              "name": "Sem molho",
+              "price": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sunday",
+      "imagePath": "assets/img/foods/sunday.png",
+      "name": "Mega Sunday",
+      "description": "Sunday com várias bolas de sorvete a sua escolha",
+      "price": 21.5,
+      "restaurantId": "ice-cream",
+      "options": [
+        {
+          "id": "calda",
+          "name": "Calda",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "chocolate",
+              "name": "Chocolate",
+              "price": 0
+            },
+            {
+              "id": "caramelo",
+              "name": "Caramelo",
+              "price": 0
+            },
+            {
+              "id": "morango",
+              "name": "Morango",
+              "price": 0
+            }
+          ]
+        },
+        {
+          "id": "coberturas",
+          "name": "Coberturas",
+          "min": 0,
+          "max": 3,
+          "options": [
+            {
+              "id": "castanhas",
+              "name": "Castanhas",
+              "price": 3
+            },
+            {
+              "id": "granulado",
+              "name": "Granulado",
+              "price": 1.5
+            },
+            {
+              "id": "chantilly",
+              "name": "Chantilly",
+              "price": 2
+            },
+            {
+              "id": "cereja",
+              "name": "Cereja",
+              "price": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chocpop",
+      "imagePath": "assets/img/foods/chocpop.png",
+      "name": "Picolé de Brigadeiro",
+      "description": "Picolé de brigadeiro recheado com côco.",
+      "price": 8.5,
+      "restaurantId": "ice-cream"
+    },
+    {
+      "id": "icestd.png",
+      "imagePath": "assets/img/foods/icestd.png",
+      "name": "Sorvete Simples",
+      "description": "Clássico sorvete de rua onde todos os sabores são idênticos.",
+      "price": 1.5,
+      "restaurantId": "ice-cream",
+      "options": [
+        {
+          "id": "sabor",
+          "name": "Sabor",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "creme",
+              "name": "Creme",
+              "price": 0
+            },
+            {
+              "id": "chocolate",
+              "name": "Chocolate",
+              "price": 0
+            },
+            {
+              "id": "morango",
+              "name": "Morango",
+              "price": 0
+            },
+            {
+              "id": "flocos",
+              "name": "Flocos",
+              "price": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cup",
+      "imagePath": "assets/img/foods/cup.png",
+      "name": "Cup Cake de Choc. Branco",
+      "description": "Cup Cake de chocolate branco",
+      "price": 5.5,
+      "restaurantId": "tasty-treats",
+      "options": [
+        {
+          "id": "cobertura-extra",
+          "name": "Cobertura extra",
+          "min": 0,
+          "max": 1,
+          "options": [
+            {
+              "id": "granulado",
+              "name": "Granulado",
+              "price": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "straw",
+      "imagePath": "assets/img/foods/straw.png",
+      "name": "Bolo de Morango",
+      "description": "Bolo recheado e coberto com morangos",
+      "price": 40.5,
+      "restaurantId": "tasty-treats",
+      "options": [
+        {
+          "id": "tamanho",
+          "name": "Tamanho",
+          "min": 1,
+          "max": 1,
+          "options": [
+            {
+              "id": "1-kg",
+              "name": "1 kg",
+              "price": 0
+            },
+            {
+              "id": "2-kg",
+              "name": "2 kg",
+              "price": 38
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cake",
+      "imagePath": "assets/img/foods/cake.png",
+      "name": "Fatia de Bolo",
+      "description": "Fatia de bolo de morango",
+      "price": 5.9,
+      "restaurantId": "tasty-treats",
+      "options": [
+        {
+          "id": "acompanhamento",
+          "name": "Acompanhamento",
+          "min": 0,
+          "max": 1,
+          "options": [
+            {
+              "id": "bola-de-sorvete",
+              "name": "Bola de sorvete",
+              "price": 6
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "name": "Julia",
+      "date": "2017-01-23T18:25:43",
+      "rating": 4.5,
+      "comments": "Tudo muito bom, entrega no tempo certo",
+      "restaurantId": "bread-bakery"
+    },
+    {
+      "name": "Aline",
+      "date": "2016-12-12T18:25:43",
+      "rating": 3,
+      "comments": "NÃO recomendo. O recheio é só um creme, não tem camarão e nem carne",
+      "restaurantId": "bread-bakery"
+    },
+    {
+      "name": "Renata",
+      "date": "2016-12-12T18:25:43",
+      "rating": 2,
+      "comments": "Não foi muito agradável ao nosso paladar, e eu e meu esposo no outro dia passamos super mal. Pode até ter sido outra coisa, mas...",
+      "restaurantId": "bread-bakery"
+    },
+    {
+      "name": "Renata",
+      "date": "2016-12-12T18:25:43",
+      "rating": 5,
+      "comments": "Nunca deixou na mão, comida sempre deliciosa.",
+      "restaurantId": "bread-bakery"
+    },
+    {
+      "name": "Daniela",
+      "date": "2017-01-23T18:25:43",
+      "rating": 4,
+      "comments": "Sanduíche muito bom! Já pedi diversas vezes sempre bom!",
+      "restaurantId": "burger-house"
+    },
+    {
+      "name": "Laila",
+      "date": "2017-02-02T18:25:43",
+      "rating": 5,
+      "comments": "Melhor hambúrguer que já provei. Vai ser difícil voltar para mc e bk",
+      "restaurantId": "burger-house"
+    },
+    {
+      "name": "Suzana",
+      "date": "2016-12-12T18:25:43",
+      "rating": 3.5,
+      "comments": "Meu sanduíche chegou frio e todo desmontado =\\",
+      "restaurantId": "burger-house"
+    },
+    {
+      "name": "Eric",
+      "date": "2017-01-23T18:25:43",
+      "rating": 4.5,
+      "comments": "Excelente opção! Recomendo!",
+      "restaurantId": "coffee-corner"
+    },
+    {
+      "name": "Amanda",
+      "date": "2017-02-02T18:25:43",
+      "rating": 2.5,
+      "comments": "Demorou muito e o café veio gelado",
+      "restaurantId": "coffee-corner"
+    },
+    {
+      "name": "Carla",
+      "date": "2016-12-12T18:25:43",
+      "rating": 4.8,
+      "comments": "Tudo perfeito. Entrega, embalagem, comida. Resultado? Melhor custo beneficio",
+      "restaurantId": "coffee-corner"
+    },
+    {
+      "name": "Rodrigo",
+      "date": "2016-12-12T18:25:43",
+      "rating": 4,
+      "comments": "Muito rápida a entrega, mas é caro.",
+      "restaurantId": "coffee-corner"
+    },
+    {
+      "name": "André",
+      "date": "2016-12-12T18:25:43",
+      "rating": 4.5,
+      "comments": "Excelente como sempre!",
+      "restaurantId": "coffee-corner"
+    },
+    {
+      "name": "João",
+      "date": "2017-01-23T18:25:43",
+      "rating": 5,
+      "comments": "Excelente. Fiz o pedido com outro endereço e quando vi o erro liguei avisando. O motoqueiro cortou a cidade todinha e a comida ainda chegou quentinha (e deliciosa). Estou sempre pedindo e recomendando",
+      "restaurantId": "green-food"
+    },
+    {
+      "name": "Marcelo",
+      "date": "2017-02-02T18:25:43",
+      "rating": 4.5,
+      "comments": "Chegou muito rápido, antes mesmo da previsão",
+      "restaurantId": "green-food"
+    },
+    {
+      "name": "Fatinha",
+      "date": "2017-01-23T18:25:43",
+      "rating": 2,
+      "comments": "Ñ gostei dos sabores q pedi e achei o preço muito elevado",
+      "restaurantId": "ice-cream"
+    },
+    {
+      "name": "Lucas",
+      "date": "2017-02-02T18:25:43",
+      "rating": 2.5,
+      "comments": "Esperar 1:45hr pra receber o pedido é INACEITÁVEL",
+      "restaurantId": "ice-cream"
+    },
+    {
+      "name": "Jacira",
+      "date": "2017-02-01T18:25:43",
+      "rating": 4.5,
+      "comments": "Veio OK!",
+      "restaurantId": "ice-cream"
+    },
+    {
+      "name": "Ana",
+      "date": "2017-01-23T18:25:43",
+      "rating": 5,
+      "comments": "Rápido e sempre uma delicia!! Ja pedi 3x e sempre veio rapido e tudo certinho.",
+      "restaurantId": "tasty-treats"
+    },
+    {
+      "name": "Larissa",
+      "date": "2017-02-02T18:25:43",
+      "rating": 2.5,
+      "comments": "A taxa de entrega poderia ser mais barata.",
+      "restaurantId": "tasty-treats"
+    },
+    {
+      "name": "Jarbas",
+      "date": "2016-12-15T18:25:43",
+      "rating": 4.7,
+      "comments": "Excelente e chegou muito rápido!",
+      "restaurantId": "tasty-treats"
+    },
+    {
+      "name": "Rafaela",
+      "date": "2017-01-12T18:25:43",
+      "rating": 5,
+      "comments": "Chegou rápido e perfeito!",
+      "restaurantId": "tasty-treats"
+    },
+    {
+      "name": "Julia",
+      "date": "2016-12-12T18:25:43",
+      "rating": 1.5,
+      "comments": "Sempre gostei muito dos pedidos que eu fiz, mas dessa vez foi péssimo e decepcionou muito. Demorou 30min a mais pra chegar do que o tempo máximo esperado.",
+      "restaurantId": "tasty-treats"
+    },
+    {
+      "name": "Marília",
+      "date": "2016-12-20T18:25:43",
+      "rating": 4.5,
+      "comments": "Taxa de entrega bastante elevada e precisa colocar no app se a pessoa quer porção adicional de algo (calda, crocante etc)",
+      "restaurantId": "tasty-treats"
+    }
+  ],
+  "users": [
+    {
+      "name": "Juliana",
+      "email": "juliana@gmail.com",
+      "passwordHash": "scrypt$f994ca4d97fa396f092cdfe9a852dbaf$0f76725712257735bd228b3e6f4d6a9e96ef57ac23b9da42a9d2f7974b5276d8"
+    },
+    {
+      "name": "Amanda",
+      "email": "amanda@gmail.com",
+      "passwordHash": "scrypt$1602b7cfb2972587256aab1891da7f0a$5e4e8d9cefec05e9da613fe3a016b313b34bb3b78cfbec10985dbf10c1ccc4f0"
+    }
+  ]
+}

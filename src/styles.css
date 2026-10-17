@@ -1,263 +1,442 @@
-/* You can add global styles to this file, and also import other style files */
+/* Estilos globais do Meat (substituem o AdminLTE 2 / Bootstrap 3 da versão original). */
 
-body {
-  color: #555;
+:root {
+  --brand: #dd4b39;
+  --brand-dark: #c23321;
+  --brand-soft: #fdf1ef;
+  --success: #00a65a;
+  --success-dark: #008d4c;
+  --primary: #3c8dbc;
+  --primary-dark: #367fa9;
+  --star: #f39c12;
+
+  --bg: #ecf0f5;
+  --surface: #ffffff;
+  --surface-muted: #f9f9f9;
+  --text: #444;
+  --text-muted: #777;
+  --border: #e5e5e5;
+  --border-strong: #b5b5b5;
+  --snackbar-bg: #323232;
+
+  font-family: 'Source Sans 3', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--text);
 }
 
-.box-header {
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+mt-root {
+  display: contents;
+}
+
+/* Com um modal aberto, a página atrás não rola. */
+html:has(dialog[open]) {
+  overflow: hidden;
+}
+
+a {
+  color: var(--primary);
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* Layout */
+
+.container {
+  width: 100%;
+  max-width: 1170px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.content-wrapper {
+  flex: 1;
+  padding-bottom: 3rem;
+}
+
+.page-title {
+  font-size: 1.6rem;
+  margin: 2rem 0 1.5rem;
+}
+
+.main-footer {
+  background: var(--surface);
+  border-top: 1px solid #d2d6de;
+  padding: 0.6rem 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.main-footer a {
   color: inherit;
 }
 
-/*
- * Component: Place Info Box
- * -------------------
- */
-.place-info-box {
-  color: #555;
-  display: block;
-  min-height: 120px;
-  background: #fff;
-  width: 100%;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-  border-radius: 2px;
-  margin-bottom: 15px;
-}
-.place-info-box small {
-  font-size: 14px;
-}
-.place-info-box .progress {
-  background: rgba(0, 0, 0, 0.2);
-  margin: 5px -10px 5px -10px;
-  height: 2px;
-}
-.place-info-box .progress,
-.place-info-box .progress .progress-bar {
-  border-radius: 0;
-}
-.place-info .progress .progress-bar {
-  background: #fff;
-}
-.place-info-box-icon {
-  border-top-left-radius: 2px;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 2px;
-  display: block;
-  float: left;
-  /*height: 120px;*/
-  width: 120px;
-  text-align: center;
-  background: rgba(0, 0, 0, 0.2);
-}
-.place-info-box-icon > img {
-  max-width: 100%;
-  /*border-right: 1px solid rgba(0, 0, 0, 0.1);*/
-}
-.place-info-box-content {
-  padding: 5px 10px;
-  margin-left: 120px;
-}
-.place-info-box-detail {
-  display: block;
-  font-size: 14px;
-  margin-bottom: 5px;
-  width: 100%;
+.main-footer .container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
-.place-info-box-text {
-  display: block;
-  font-size: 18px;
-  font-weight: bold;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-bottom: 10px;
-  text-transform: uppercase;
-  width: 80%;
-  float: left
-}
-.place-info-box-text {
+.grid {
+  display: grid;
+  gap: 1.5rem;
 }
 
-.place-info-box-star {
-  display: block;
-  font-size: 18px;
-  font-weight: bold;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-bottom: 10px;
-  width: 20%;
-  float: right;
+/* Dentro de um grid o espaçamento vem do gap, não da margem do box. */
+.grid > .box {
+  margin-bottom: 0;
 }
-.place-info-box-more {
-  display: block;
+
+.grid-2 {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 30rem), 1fr));
 }
-.progress-description {
+
+/* Box */
+
+.box {
+  background: var(--surface);
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.box-header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.box-title {
+  font-size: 1.2rem;
   margin: 0;
 }
 
-/* Detail For restaurant */
-
-.box-img-detail {
-    width: 180px;
-    height: 180px;
+.lead p,
+.box.lead {
+  font-size: 1.1rem;
 }
 
-.box-body dl {
-  font-size: 18px;
-}
+/* Info box: cards de restaurante e itens do cardápio */
 
-/*
- * Component: Menu Item
- * -------------------
- */
-.menu-item-info-box {
-  color: #555;
-  display: block;
+.info-box {
+  display: flex;
   min-height: 120px;
-  background: #fff;
-  width: 100%;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-  border-radius: 2px;
-  margin-bottom: 15px;
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
+  text-decoration: none;
+  overflow: hidden;
+  transition: box-shadow 0.15s;
 }
-.menu-item-info-box small {
-  font-size: 14px;
+
+a.info-box:hover {
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.15);
 }
-.menu-item-info-box .progress {
-  background: rgba(0, 0, 0, 0.2);
-  margin: 5px -10px 5px -10px;
-  height: 2px;
-}
-.menu-item-info-box .progress,
-.menu-item-info-box .progress .progress-bar {
-  border-radius: 0;
-}
-.menu-item-info .progress .progress-bar {
-  background: #fff;
-}
-.menu-item-info-box-icon {
-  border-top-left-radius: 2px;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 2px;
+
+mt-menu-item {
   display: block;
-  float: left;
-  /*height: 120px;*/
+  margin-bottom: 1.25rem;
+}
+
+.info-box-icon {
+  flex: 0 0 120px;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+.info-box-icon img {
+  display: block;
   width: 120px;
-  text-align: center;
-  background: rgba(0, 0, 0, 0.2);
-}
-.menu-item-info-box-icon > img {
-  max-width: 100%;
-  /*border-right: 1px solid rgba(0, 0, 0, 0.1);*/
-}
-.menu-item-info-box-price {
-  font-weight: bold;
-  margin-right: 20px;
-  font-size: 16px;
+  height: auto;
 }
 
-.menu-item-info-box-content {
-  padding: 5px 10px;
-  margin-left: 120px;
+.info-box-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1rem 1.25rem;
 }
 
-.menu-item-info-box-content a {
-  cursor: pointer;
-}
-
-.menu-item-info-box-detail {
-  display: block;
-  font-size: 14px;
-  margin-bottom: 15px;
+.info-box-header {
+  display: flex;
   width: 100%;
+  gap: 0.5rem;
 }
 
-.menu-item-info-box-text {
-  display: block;
-  font-size: 18px;
+.info-box-title {
+  font-size: 1.15rem;
   font-weight: bold;
+  text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-bottom: 10px;
-  text-transform: uppercase;
-  width: 80%;
-}
-.menu-item-info-box-text {
+  margin-bottom: 0.75rem;
 }
 
-.menu-item-info-box-more {
-  display: block;
+.info-box-header .info-box-title {
+  flex: 1;
 }
 
-/**
- buttons
-*/
-
-.danger {
-  color: #dd4b39;
-  display: inline;
-}
-
-/*Jumbotrons*/
-
-.jumbotron {
-  background-color: #fff;
-  text-align:center;
-}
-.jumbotron h2 {
-  font-size: 40px;
-}
-
-.welcome-jumbotron h1 {
-  margin-bottom: 60px;
-}
-
-.welcome-jumbotron p {
-  margin-bottom: 60px;
-  font-size: 30px;
-}
-
-/* inputs */
-
-.fancy-radio {
-  position: absolute;
-  opacity: 0;
-}
-
-/*Review*/
-.review-score{
-  font-size: 30px;
+.info-box-star {
+  font-size: 1.15rem;
   font-weight: bold;
+  white-space: nowrap;
 }
 
-/*rstaurant detail*/
-
-.detail-footer{
-  padding:0px
+.info-box-detail {
+  display: block;
+  font-size: 0.95rem;
+  margin-bottom: 0.4rem;
 }
 
-.detail-footer > a{
-  text-align: center;
-  font-size: 16px;
-  color: #555;
-  width:50%;
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
+/* Botões */
 
-.detail-footer > a:hover{
-  outline: none;
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 0.6rem 1.1rem;
+  font: inherit;
+  color: #fff;
   text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s;
 }
 
-.detail-active {
-  border-bottom: 2px solid #dd4b39;
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-.has-error-block {
-  color: #dd4b39;
+.btn-lg {
+  font-size: 1.25rem;
+  padding: 0.65rem 1.25rem;
+}
+
+.btn-primary {
+  background: var(--primary);
+}
+.btn-primary:not(:disabled):hover {
+  background: var(--primary-dark);
+}
+
+.btn-default {
+  background: var(--surface-muted);
+  border-color: #ddd;
+  color: var(--text);
+}
+.btn-default:not(:disabled):hover {
+  background: #e7e7e7;
+}
+
+.btn-outline {
+  background: var(--surface);
+  border-color: var(--brand);
+  color: var(--brand);
+  font-weight: 600;
+}
+.btn-outline:not(:disabled):hover {
+  background: var(--brand-soft);
+}
+
+.btn-success {
+  background: var(--success);
+}
+.btn-success:not(:disabled):hover {
+  background: var(--success-dark);
+}
+
+.btn-danger {
+  background: var(--brand);
+}
+.btn-danger:not(:disabled):hover {
+  background: var(--brand-dark);
+}
+
+.link-button,
+.icon-button {
+  background: none;
+  border: 0;
+  padding: 0.25rem 0.4rem;
+  font: inherit;
+  color: var(--primary);
+  cursor: pointer;
+}
+
+.icon-button {
+  color: var(--text);
+}
+
+.danger,
+.icon-button.danger {
+  color: var(--brand);
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Tabelas */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 0.85rem 0.75rem;
+  border-top: 1px solid var(--border);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.table thead th {
+  border-top: 0;
+  border-bottom: 2px solid var(--border);
+}
+
+.table tbody tr:first-child th,
+.table tbody tr:first-child td {
+  border-top: 0;
+}
+
+.table-striped tbody tr:nth-child(odd) {
+  background: var(--surface-muted);
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.text-right,
+.table .text-right {
+  text-align: right;
+}
+
+.text-center,
+.table .text-center {
+  text-align: center;
+}
+
+/* Formulários */
+
+.form-group {
+  display: block;
+  margin-bottom: 1.25rem;
+}
+
+.control-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.45rem;
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid #d2d6de;
+  border-radius: 4px;
+  transition: border-color 0.15s;
+}
+
+.form-control:focus {
+  border-color: var(--primary);
+  outline: none;
+}
+
+.help-block {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.has-success .form-control {
+  border-color: var(--success);
+}
+.has-success .help-block,
+.has-success .control-label {
+  color: var(--success);
+}
+
+.has-error .form-control {
+  border-color: var(--brand);
+}
+.has-error .help-block,
+.has-error .control-label,
+.has-error.help-block {
+  color: var(--brand);
+}
+
+/* Utilitários */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Animações (usadas com animate.enter) */
+
+.fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -1,0 +1,96 @@
+:host {
+  display: block;
+}
+
+.radio-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0;
+  cursor: pointer;
+  font-weight: normal;
+}
+
+input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.radio-mark {
+  flex: none;
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 2px solid var(--border-strong);
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+  transition: border-color 0.15s;
+}
+
+.checked .radio-mark {
+  border-color: var(--brand);
+}
+
+.checked .radio-mark::after {
+  content: '';
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--brand);
+}
+
+input:focus-visible + .radio-mark {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+.option-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.option-description {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Layout em cartões */
+
+:host(.layout-cards) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: 0.75rem;
+}
+
+:host(.layout-cards) .radio-option {
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  background: var(--surface);
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+:host(.layout-cards) .radio-option:hover {
+  border-color: var(--brand);
+}
+
+:host(.layout-cards) .radio-option.checked {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 1px var(--brand);
+  background: var(--brand-soft);
+}
+
+:host(.layout-cards) .option-icon {
+  font-size: 1.4rem;
+  width: 1.75rem;
+  text-align: center;
+  color: var(--brand);
+}
+
+:host(.layout-cards) .option-label {
+  font-weight: 600;
+}

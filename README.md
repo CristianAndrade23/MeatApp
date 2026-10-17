@@ -1,147 +1,100 @@
-# Meat - Angular App Starter
+# Meat
 
-## 1. Passos para começar
+Aplicação de pedidos de comida (restaurantes, cardápio, carrinho, checkout e avaliação),
+originalmente desenvolvida no curso de Angular da [COD3R](https://www.cod3r.com.br) e **reescrita em 2026**.
 
-### Clonando o Repositório
+| | Versão 1 (2017–2019) | Versão 2 (2026) |
+|---|---|---|
+| Frontend | Angular 4, NgModules, `@angular/http`, RxJS 5 | Angular 22, componentes standalone, signals, Signal Forms, `httpResource`, zoneless |
+| Estilo | AdminLTE 2 + Bootstrap 3 + jQuery | CSS próprio (sem jQuery) + Font Awesome 7 |
+| Backend | `json-server` | Express 5 + JWT, TypeScript executado direto pelo Node |
+| Testes | Karma + Jasmine + Protractor | Vitest (frontend) e `node:test` (backend) |
 
-`git clone https://github.com/cod3rcursos/meat-app-starter.git`
+O código da versão original continua acessível pela tag [`v1-angular4`](../../tree/v1-angular4).
 
-### Instalando as Dependências
+## Funcionalidades
 
-`npm install`
+- Lista de restaurantes com busca (debounce) e detalhes com cardápio e avaliações
+- Modal do item no estilo iFood: grupos de opções obrigatórios ou opcionais (ex.: ponto da carne,
+  adicionais pagos, tamanho), observação, quantidade e total; opções validadas e cobradas no servidor
+- Sacola de compras com signals, persistida no `localStorage` (itens de um restaurante por vez),
+  com página própria acessível pelo header e sem exigir login
+- Confirmações em modal próprio (sem `alert`/`confirm` do navegador)
+- Login com JWT; a finalização do pedido exige usuário logado (`canMatch`)
+- Checkout em etapas (Entrega → Pagamento → Revisão) com Signal Forms:
+  - entrega no endereço ou retirada na loja (sem frete, com endereço e horário do restaurante)
+  - pagar agora pelo site (Pix ou cartão de crédito) ou na entrega/retirada
+    (dinheiro com troco, débito, crédito ou vale-refeição)
+  - cartão validado no navegador (Luhn, bandeira, validade); o pagamento online é **simulado**
+    e só bandeira + 4 últimos dígitos são enviados ao servidor
+  - rascunho do checkout mantido em memória: dá para voltar à sacola, ajustar itens ou refazer o
+    login e retomar da mesma etapa
+- Frete e total recalculados no servidor a partir dos preços do cardápio
+- Resumo do pedido com avaliação por estrelas
+- Notificações (snackbar), tratamento centralizado de erros HTTP e página 404
+- Lazy loading das rotas de sacola, pedido e login
 
-### Inicializando o Servidor
+## Requisitos
 
-`ng serve` ou `npm start`
+- Node.js 22.22+, 24.15+ ou 26+
 
-## 2. Iniciando o Backend
+## Como rodar em desenvolvimento
 
-### Instalando o json-server
-
-`npm install -g json-server`
-
-### Iniciando o serviço (raiz da aplicação)
-
-`json-server db.json`
-
-## Goodies
-
-Expressões regulares usadas na validação de formulários
-
-### Email Regex
-
-`/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i`
-
-### Number Regex
-
-`/^[0-9]*$/`
-
-## Upgrade para Angular 4.3
-
-Dependências dos pacotes que devem ficar em package.json:
-
-```
-"dependencies": {
-    "@angular/animations": "4.3.3",
-    "@angular/common": "4.3.3",
-    "@angular/compiler": "4.3.3",
-    "@angular/core": "4.3.3",
-    "@angular/forms": "4.3.3",
-    "@angular/platform-browser": "4.3.3",
-    "@angular/platform-browser-dynamic": "4.3.3",
-    "@angular/router": "4.3.3",
-    "admin-lte": "2.3.11",
-    "core-js": "2.4.1",
-    "font-awesome": "4.7.0",
-    "intl": "1.2.5",
-    "jquery": "3.1.1",
-    "reflect-metadata": "0.1.10",
-    "rxjs": "5.4.2",
-    "ts-helpers": "1.1.2",
-    "web-animations-js": "2.2.5",
-    "zone.js": "0.8.16"
-  },
-  "devDependencies": {
-    "@angular/cli": "1.2.7",
-    "@angular/compiler-cli": "4.3.3",
-    "@types/jasmine": "2.5.53",
-    "@types/express": "4.0.37",
-    "@types/jsonwebtoken": "7.2.3",
-    "@types/node": "7.0.5",
-    "codelyzer": "3.1.2",
-    "jasmine-core": "2.7.0",
-    "jasmine-spec-reporter": "4.1.1",
-    "json-server": "0.12.0",
-    "jsonwebtoken": "7.4.1",
-    "karma": "1.7.0",
-    "karma-chrome-launcher": "2.2.0",
-    "karma-cli": "1.0.1",
-    "karma-jasmine": "1.1.0",
-    "karma-remap-istanbul": "0.6.0",
-    "protractor": "5.1.2",
-    "ts-node": "3.3.0",
-    "tslint": "5.5.0",
-    "typescript": "2.4.2",
-    "webdriver-manager": "12.0.6"
-  }
+```bash
+npm install        # instala frontend e backend
+npm run api        # terminal 1: API em http://localhost:3000/api
+npm start          # terminal 2: app em http://localhost:4200
 ```
 
-## Upgrade para Angular 6 (Apenas para a aulas finais)
+O `ng serve` encaminha as chamadas a `/api` para o backend (`proxy.conf.json`).
 
-Dependências dos pacotes que devem ficar em package.json:
+Usuários de teste:
+
+| Email | Senha |
+|---|---|
+| juliana@gmail.com | juliana23 |
+| amanda@gmail.com | amanda21 |
+
+## Testes
+
+```bash
+npm test           # frontend (Vitest)
+npm run test:api   # backend (node:test)
+```
+
+## Produção
+
+```bash
+npm run serve:prod
+```
+
+Gera o build do Angular e sobe o Express servindo a API e o app na porta 3000.
+Em produção, defina `JWT_SECRET` (obrigatório com `NODE_ENV=production`) e, opcionalmente, `PORT` e `DB_FILE`.
+
+## Estrutura
 
 ```
-"dependencies": {
-    "@angular/animations": "6.0.0",
-    "@angular/common": "6.0.0",
-    "@angular/compiler": "6.0.0",
-    "@angular/core": "6.0.0",
-    "@angular/forms": "6.0.0",
-    "@angular/platform-browser": "6.0.0",
-    "@angular/platform-browser-dynamic": "6.0.0",
-    "@angular/platform-server": "6.0.0",
-    "@angular/router": "6.0.0",
-    "admin-lte": "2.3.11",
-    "core-js": "2.5.4",
-    "font-awesome": "4.7.0",
-    "intl": "1.2.5",
-    "jquery": "3.1.1",
-    "reflect-metadata": "0.1.10",
-    "rxjs": "6.0.0",
-    "rxjs-compat": "6.0.0",
-    "ts-helpers": "1.1.2",
-    "web-animations-js": "2.2.5",
-    "zone.js": "0.8.26",
-    "ajv": "6.0.0"
-  },
-  "devDependencies": {
-    "@angular-devkit/build-angular": "0.6.0",
-    "@angular/compiler-cli": "6.0.0",
-    "@angular/cli": "6.0.0",
-    "@angular/language-service": "6.0.0",
-    "@types/jasmine": "2.8.6",
-    "@types/jasminewd2": "2.0.3",
-    "@types/node": "8.9.4",
-    "@types/express": "4.0.37",
-    "@types/jsonwebtoken": "7.2.3",
-    "codelyzer": "4.2.1",
-    "jasmine-core": "2.99.1",
-    "jasmine-spec-reporter": "4.2.1",
-    "karma": "1.7.1",
-    "karma-chrome-launcher": "2.2.0",
-    "karma-coverage-istanbul-reporter": "1.4.2",
-    "karma-jasmine": "1.1.1",
-    "karma-jasmine-html-reporter": "0.2.2",
-    "protractor": "5.3.0",
-    "ts-node": "5.0.1",
-    "tslint": "5.9.1",
-    "json-server": "0.12.0",
-    "jsonwebtoken": "7.4.1",
-    "typescript": "2.7.2",
-    "webdriver-manager": "12.0.6"
-  }
+src/app/
+  core/               modelos, autenticação, interceptors HTTP, notificações
+  layout/             header e snackbar
+  pages/              home e 404
+  restaurants/        lista de restaurantes
+  restaurant-detail/  detalhe, cardápio e avaliações
+  cart/               store da sacola (signals), página da sacola e sacola lateral
+  order/              checkout em etapas, rascunho, regras de pagamento e resumo
+  security/           login
+  shared/             input com validação, radio e rating
+backend/
+  src/                servidor Express, autenticação e banco em arquivo JSON
+  data/seed.json      catálogo: restaurantes, cardápio, avaliações e usuários
+  data/db.json        pedidos (local, fora do git; criado no primeiro pedido)
+  test/               testes da API
 ```
+
+Para cadastrar outro usuário, gere o hash da senha com
+`npm --prefix backend run hash-password -- <senha>` e adicione-o em `backend/data/seed.json`
+(reinicie a API para carregar).
 
 ## Créditos
 
-Todas as imagens usadas na aplicação são pertencentes a freepik.com
+Projeto original © 2017 COD3R, licença MIT. Imagens por [freepik.com](https://www.freepik.com).

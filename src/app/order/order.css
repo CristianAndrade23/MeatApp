@@ -1,0 +1,290 @@
+.checkout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 21rem;
+  gap: 1.5rem;
+  align-items: start;
+  margin-top: 2rem;
+}
+
+.checkout-main {
+  padding: 1.75rem 2rem;
+  margin: 0;
+}
+
+.checkout-summary {
+  position: sticky;
+  top: 4.5rem;
+  margin: 0;
+}
+
+@media (max-width: 991px) {
+  .checkout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* No celular o resumo vem antes, para o total ficar sempre visível no topo. */
+  .checkout-summary {
+    position: static;
+    order: -1;
+  }
+}
+
+.page-header {
+  font-size: 1.6rem;
+  margin: 0 0 1.25rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Indicador de etapas */
+
+.stepper {
+  display: flex;
+  list-style: none;
+  margin: 0 0 2rem;
+  padding: 0;
+  counter-reset: step;
+}
+
+.stepper li {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.stepper li:not(:last-child)::after {
+  content: '';
+  flex: 1;
+  height: 2px;
+  margin: 0 0.5rem;
+  background: var(--border);
+}
+
+.stepper li.done:not(:last-child)::after {
+  background: var(--success);
+}
+
+.stepper a,
+.stepper button {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: 0;
+  padding: 0.25rem;
+  font: inherit;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.stepper button:disabled {
+  cursor: default;
+}
+
+.step-number {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 2px solid var(--border-strong);
+  font-weight: bold;
+  background: var(--surface);
+}
+
+.current button {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.current .step-number {
+  border-color: var(--brand);
+  background: var(--brand);
+  color: #fff;
+}
+
+.done .step-number {
+  border-color: var(--success);
+  background: var(--success);
+  color: #fff;
+}
+
+@media (max-width: 480px) {
+  .stepper li:not(.current) .step-label {
+    display: none;
+  }
+}
+
+/* Conteúdo das etapas */
+
+.step-title {
+  font-size: 1.25rem;
+  margin: 0 0 1rem;
+}
+
+.step-title:focus {
+  outline: none;
+}
+
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.step-section {
+  margin-top: 1.5rem;
+}
+
+.lead {
+  font-size: 1.15rem;
+  font-weight: 300;
+  margin: 0 0 0.75rem;
+  padding: 0;
+}
+
+.hint {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.pickup {
+  padding: 1rem;
+  border-radius: 6px;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+}
+
+.pickup p {
+  margin: 0 0 0.4rem;
+}
+
+.address-grid,
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0 1rem;
+}
+
+.span-2 {
+  grid-column: span 2;
+}
+
+@media (max-width: 575px) {
+  .address-grid,
+  .card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.card-number {
+  position: relative;
+}
+
+.card-number img {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.change-for {
+  max-width: 24rem;
+}
+
+.notice {
+  margin: 1rem 0 0;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  background: #eaf4fb;
+  color: #245a7a;
+}
+
+/* Revisão */
+
+.review {
+  margin: 0 0 1.5rem;
+}
+
+.review-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.review-row dt {
+  flex: 0 0 8rem;
+  font-weight: 600;
+}
+
+.review-row dd {
+  flex: 1 1 14rem;
+  margin: 0;
+}
+
+/* Ações */
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.form-actions .btn:last-child {
+  margin-left: auto;
+}
+
+/* Resumo lateral */
+
+.summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.summary-header a {
+  font-size: 0.9rem;
+}
+
+.summary-restaurant {
+  margin: 0.5rem 0;
+  font-weight: 600;
+}
+
+.summary-items {
+  list-style: none;
+  margin: 0 0 0.5rem;
+  padding: 0 0 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.summary-details {
+  display: block;
+  color: var(--text-muted);
+}
+
+.summary-items li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.25rem 0;
+}
+
+.empty-cart {
+  text-align: center;
+  padding: 3rem 1rem;
+  margin-top: 1.5rem;
+}
+
+.empty-cart > i {
+  font-size: 3rem;
+  color: var(--border-strong);
+}

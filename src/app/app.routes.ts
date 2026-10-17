@@ -1,22 +1,45 @@
-import {Routes} from '@angular/router';
-import {HomeComponent} from './home/home.component';
-import {AboutComponent} from './about/about.component';
-import {RestaurantsComponent} from './restaurants/restaurants.component';
-import {RestaurantDetailComponent} from './restaurant-detail/restaurant-detail.component';
-import {MenuComponent} from './restaurant-detail/menu/menu.component';
-import {ReviewsComponent} from './restaurant-detail/reviews/reviews.component';
-import {OrderComponent} from './order/order.component';
+import { Routes } from '@angular/router';
+import { loggedInGuard } from './core/auth/auth.guard';
+import { Home } from './pages/home';
+import { NotFound } from './pages/not-found';
+import { Menu } from './restaurant-detail/menu';
+import { RestaurantDetail } from './restaurant-detail/restaurant-detail';
+import { Reviews } from './restaurant-detail/reviews';
+import { Restaurants } from './restaurants/restaurants';
 
-
-export const ROUTES: Routes = [
-  {path: '', component: HomeComponent},
-  {path: 'restaurants', component: RestaurantsComponent},
-  {path: 'restaurants/:id', component: RestaurantDetailComponent,
-  children: [
-    {path: '', redirectTo: 'menu', pathMatch: 'full'},
-    {path: 'menu', component: MenuComponent},
-    {path: 'reviews', component: ReviewsComponent}
-  ]},
-  {path: 'order', component: OrderComponent},
-  {path: 'about', component: AboutComponent}
+export const routes: Routes = [
+  { path: '', component: Home, title: 'Meat' },
+  { path: 'restaurants', component: Restaurants, title: 'Restaurantes | Meat' },
+  {
+    path: 'restaurants/:id',
+    component: RestaurantDetail,
+    title: 'Restaurante | Meat',
+    children: [
+      { path: '', redirectTo: 'menu', pathMatch: 'full' },
+      { path: 'menu', component: Menu },
+      { path: 'reviews', component: Reviews },
+    ],
+  },
+  {
+    path: 'cart',
+    loadComponent: () => import('./cart/cart-page').then((m) => m.CartPage),
+    title: 'Sacola | Meat',
+  },
+  {
+    path: 'order',
+    canMatch: [loggedInGuard],
+    loadComponent: () => import('./order/order').then((m) => m.Order),
+    title: 'Finalizar pedido | Meat',
+  },
+  {
+    path: 'order-summary',
+    loadComponent: () => import('./order/order-summary').then((m) => m.OrderSummary),
+    title: 'Pedido realizado | Meat',
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('./security/login').then((m) => m.Login),
+    title: 'Entrar | Meat',
+  },
+  { path: '**', component: NotFound, title: 'Página não encontrada | Meat' },
 ];
