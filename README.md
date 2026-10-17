@@ -11,6 +11,8 @@ Aplicação de pedidos de comida, inspirada no iFood: restaurantes e cardápio, 
 
 Frontend em **Angular 22** (componentes standalone, signals, Signal Forms, zoneless) e API em **Express 5 + JWT**, cobertos por testes unitários, de API e **E2E com Cypress**.
 
+**[▶ Ver o app no ar](https://meatapp.onrender.com)**: entre com `juliana@gmail.com` / `juliana23` ou crie uma conta. Está no plano gratuito do Render, então o primeiro acesso depois de um tempo parado leva cerca de 30 segundos.
+
 ![Cardápio com a sacola](docs/screenshots/03-cardapio.png)
 
 ## Sumário
@@ -19,6 +21,7 @@ Frontend em **Angular 22** (componentes standalone, signals, Signal Forms, zonel
 - [Telas](#telas)
 - [Tecnologias](#tecnologias)
 - [Como rodar](#como-rodar)
+- [Deploy](#deploy)
 - [Testes](#testes)
 - [Destaques técnicos](#destaques-técnicos)
 - [Estrutura do projeto](#estrutura-do-projeto)
@@ -76,6 +79,7 @@ Frontend em **Angular 22** (componentes standalone, signals, Signal Forms, zonel
 | Backend | Node.js, Express 5, JWT (`jsonwebtoken`), senhas com `scrypt`, banco em arquivo JSON |
 | Testes | Vitest (unitários), `node:test` (API), Cypress (E2E) |
 | CI | GitHub Actions: build e as três camadas de testes a cada push e PR |
+| Deploy | Render (Blueprint em `render.yaml`): API e frontend no mesmo serviço |
 
 ## Como rodar
 
@@ -108,6 +112,16 @@ npm run serve:prod   # app e API em http://localhost:3000
 | `amanda@gmail.com` | `amanda21` |
 
 Os pedidos, contas criadas e avaliações ficam em `backend/data/db.json`, que é criado no primeiro uso e fica fora do git. Para recomeçar do zero, basta apagar esse arquivo.
+
+## Deploy
+
+O app completo (Angular e API) roda como um único serviço no **Render**, descrito em [`render.yaml`](render.yaml): build do Angular, start do Express, health check em `/api/restaurants` e um `JWT_SECRET` gerado automaticamente.
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/CristianAndrade23/MeatApp)
+
+No Render, use *New → Blueprint*, escolha este repositório e confirme. Depois disso, cada push na `master` faz um novo deploy.
+
+> No plano gratuito, o disco do servidor é temporário: pedidos, contas e avaliações criados no app publicado são apagados quando o serviço reinicia ou "dorme". O catálogo e os usuários de teste vêm do `seed.json` e estão sempre disponíveis.
 
 ## Testes
 
