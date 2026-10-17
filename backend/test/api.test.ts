@@ -132,7 +132,8 @@ describe('pedidos', () => {
     assert.equal(order['userEmail'], 'juliana@gmail.com');
 
     const saved = JSON.parse(await readFile(dbFile, 'utf8')) as Body;
-    assert.deepEqual(Object.keys(saved), ['orders'], 'o banco guarda só os pedidos');
+    assert.deepEqual(Object.keys(saved), ['orders', 'users', 'reviews'], 'o banco não copia o catálogo');
+    assert.deepEqual(saved['users'], [], 'usuários do seed não são duplicados no banco');
     assert.ok((saved['orders'] as Body[]).some((o) => o['id'] === order['id']));
   });
 

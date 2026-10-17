@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import express, { type Request, type Response } from 'express';
-import { type AuthenticatedRequest, loginHandler, requireAuth } from './auth.ts';
+import { type AuthenticatedRequest, loginHandler, registerHandler, requireAuth } from './auth.ts';
 import type {
   Db,
   DeliveryAddress,
@@ -17,6 +17,7 @@ import type {
 } from './db.ts';
 
 export const DELIVERY_FEE = 8;
+export const MAX_REVIEW_LENGTH = 500;
 
 /** Formas de pagamento aceitas em cada momento. */
 export const PAYMENT_METHODS: Record<PaymentTiming, PaymentMethod[]> = {
@@ -62,10 +63,83 @@ export function createApp({ db, jwtSecret, staticDir }: AppOptions) {
   });
 
   api.get('/restaurants/:id/reviews', (req: Request, res: Response) => {
-    res.json(db.data.reviews.filter((r) => r.restaurantId === req.params['id']));
+    // Mais recentes primeiro, para a avaliação feita agora aparecer no topo.
+    const reviews = db.data.reviews
+      .filter((r) => r.restaurantId === req.params['id'])
+      .sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
+    res.json(reviews);
   });
 
   api.post('/login', loginHandler(db, jwtSecret));
+  api.post('/users', registerHandler(db, jwtSecret));
+
+  /** Pedidos do usuário logado, mais recentes primeiro. */
+  api.get('/orders', requireAuth(jwtSecret), (req: AuthenticatedRequest, res: Response) => {
+    const orders = db.data.orders
+      .filter((o) => o.userEmail === req.user!.email)
+      .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
+    res.json(orders);
+  });
+
+  api.get('/orders/:id', requireAuth(jwtSecret), (req: AuthenticatedRequest, res: Response) => {
+    const order = findOwnOrder(req);
+    if (!order) {
+      res.status(404).json({ message: 'Pedido não encontrado.' });
+      return;
+    }
+    res.json(order);
+  });
+
+  /** Avaliação do pedido: publicada nas avaliações do restaurante. Uma por pedido. */
+  api.post(
+    '/orders/:id/review',
+    requireAuth(jwtSecret),
+    async (req: AuthenticatedRequest, res: Response) => {
+      const order = findOwnOrder(req);
+      if (!order) {
+        res.status(404).json({ message: 'Pedido não encontrado.' });
+        return;
+      }
+      if (order.review) {
+        res.status(409).json({ message: 'Este pedido já foi avaliado.' });
+        return;
+      }
+
+      const body = asRecord(req.body);
+      const rating = body['rating'];
+      const comments = text(body['comments']);
+      if (typeof rating !== 'number' || !Number.isInteger(rating) || rating < 1 || rating > 5) {
+        res.status(400).json({ message: 'A nota deve ser de 1 a 5.' });
+        return;
+      }
+      if (typeof body['comments'] !== 'undefined' && typeof body['comments'] !== 'string') {
+        res.status(400).json({ message: 'Comentário inválido.' });
+        return;
+      }
+      if (comments.length > MAX_REVIEW_LENGTH) {
+        res.status(400).json({ message: 'Comentário muito longo.' });
+        return;
+      }
+
+      const createdAt = new Date().toISOString();
+      order.review = { rating, comments, createdAt };
+      db.data.reviews.push({
+        name: req.user!.name,
+        date: createdAt,
+        rating,
+        comments,
+        restaurantId: order.restaurantId,
+        orderId: order.id,
+      });
+      await db.save();
+      res.status(201).json(order);
+    },
+  );
+
+  function findOwnOrder(req: AuthenticatedRequest): Order | undefined {
+    // Pedido de outro usuário responde 404, sem revelar que ele existe.
+    return db.data.orders.find((o) => o.id === req.params['id'] && o.userEmail === req.user!.email);
+  }
 
   api.post('/orders', requireAuth(jwtSecret), async (req: AuthenticatedRequest, res: Response) => {
     const result = validateOrder(db, req.body);
