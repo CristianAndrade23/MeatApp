@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  testes:
+    name: Build e testes (unitários, API e E2E)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            backend/package-lock.json
+
+      - name: Cache do binário do Cypress
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Instalar dependências (frontend e backend)
+        run: npm ci
+
+      - name: Build
+        run: npx ng build
+
+      - name: Testes unitários do frontend (Vitest)
+        run: npx ng test --watch=false
+
+      - name: Checagem de tipos e testes do backend (node:test)
+        run: |
+          npx tsc -p backend --noEmit
+          npm run test:api
+
+      - name: Testes E2E (Cypress)
+        run: npm run e2e
+
+      - name: Screenshots das falhas do Cypress
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+          if-no-files-found: ignore

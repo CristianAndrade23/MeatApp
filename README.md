@@ -1,122 +1,206 @@
-# Meat
+# Meat — app de delivery em Angular 22
 
-Aplicação de pedidos de comida (restaurantes, cardápio, carrinho, checkout e avaliação),
-originalmente desenvolvida no curso de Angular da [COD3R](https://www.cod3r.com.br) e **reescrita em 2026**.
+[![CI](https://github.com/CristianAndrade23/MeatApp/actions/workflows/ci.yml/badge.svg)](https://github.com/CristianAndrade23/MeatApp/actions/workflows/ci.yml)
+![Angular](https://img.shields.io/badge/Angular-22-DD0031?logo=angular&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-22%20%7C%2024%20%7C%2026-339933?logo=node.js&logoColor=white)
+![Cypress](https://img.shields.io/badge/E2E-Cypress-69D3A7?logo=cypress&logoColor=white)
+![Licença MIT](https://img.shields.io/badge/licen%C3%A7a-MIT-blue)
 
-| | Versão 1 (2017–2019) | Versão 2 (2026) |
-|---|---|---|
-| Frontend | Angular 4, NgModules, `@angular/http`, RxJS 5 | Angular 22, componentes standalone, signals, Signal Forms, `httpResource`, zoneless |
-| Estilo | AdminLTE 2 + Bootstrap 3 + jQuery | CSS próprio (sem jQuery) + Font Awesome 7 |
-| Backend | `json-server` | Express 5 + JWT, TypeScript executado direto pelo Node |
-| Testes | Karma + Jasmine + Protractor | Vitest (frontend) e `node:test` (backend) |
+Aplicação de pedidos de comida, inspirada no iFood: restaurantes e cardápio, itens com opções e adicionais, sacola, checkout em etapas (entrega ou retirada, pagamento online ou na entrega), conta de usuário, histórico de pedidos e avaliações.
 
-O código da versão original continua acessível pela tag [`v1-angular4`](../../tree/v1-angular4).
+Frontend em **Angular 22** (componentes standalone, signals, Signal Forms, zoneless) e API em **Express 5 + JWT**, cobertos por testes unitários, de API e **E2E com Cypress**.
+
+![Cardápio com a sacola](docs/screenshots/03-cardapio.png)
+
+## Sumário
+
+- [Funcionalidades](#funcionalidades)
+- [Telas](#telas)
+- [Tecnologias](#tecnologias)
+- [Como rodar](#como-rodar)
+- [Testes](#testes)
+- [Destaques técnicos](#destaques-técnicos)
+- [Estrutura do projeto](#estrutura-do-projeto)
+- [API](#api)
+- [História do projeto](#história-do-projeto)
+- [Licença e créditos](#licença-e-créditos)
 
 ## Funcionalidades
 
-- Lista de restaurantes com busca (debounce) e detalhes com cardápio e avaliações
-- Modal do item no estilo iFood: grupos de opções obrigatórios ou opcionais (ex.: ponto da carne,
-  adicionais pagos, tamanho), observação, quantidade e total; opções validadas e cobradas no servidor
-- Sacola de compras com signals, persistida no `localStorage` (itens de um restaurante por vez),
-  com página própria acessível pelo header e sem exigir login
-- Confirmações em modal próprio (sem `alert`/`confirm` do navegador)
-- Cadastro de usuário (senha com hash `scrypt`) e login com JWT; a finalização do pedido e o
-  histórico exigem usuário logado (`canMatch`), voltando para onde a pessoa estava
-- Checkout em etapas (Entrega → Pagamento → Revisão) com Signal Forms:
-  - entrega no endereço ou retirada na loja (sem frete, com endereço e horário do restaurante)
-  - pagar agora pelo site (Pix ou cartão de crédito) ou na entrega/retirada
-    (dinheiro com troco, débito, crédito ou vale-refeição)
-  - cartão validado no navegador (Luhn, bandeira, validade); o pagamento online é **simulado**
-    e só bandeira + 4 últimos dígitos são enviados ao servidor
-  - rascunho do checkout mantido em memória: dá para voltar à sacola, ajustar itens ou refazer o
-    login e retomar da mesma etapa
-- Frete e total recalculados no servidor a partir dos preços do cardápio
-- Resumo do pedido como comprovante (número, data, itens, entrega, pagamento e valores)
-- **Meus pedidos**: histórico do usuário e detalhe de cada pedido
-- Avaliação do pedido (nota e comentário, uma por pedido), publicada nas avaliações do restaurante
-- Notificações (snackbar), tratamento centralizado de erros HTTP e página 404
-- Lazy loading das rotas de sacola, pedido, histórico, login e cadastro
+**Restaurantes e cardápio**
+- Lista de restaurantes com busca por nome ou categoria
+- Detalhe do restaurante com cardápio e avaliações
+- Modal do item no estilo iFood: grupos de opções obrigatórios ou opcionais (ponto da carne, tamanho, adicionais pagos com limite), observação, quantidade e total
 
-## Requisitos
+**Sacola**
+- Página própria, acessível pelo header, sem exigir login
+- Itens de um restaurante por vez, como em apps de delivery; ao trocar, o app pede confirmação
+- Salva no navegador: continua lá depois de recarregar a página
 
-- Node.js 22.22+, 24.15+ ou 26+
+**Checkout em etapas** (Sacola → Entrega → Pagamento → Revisão)
+- Entrega no endereço ou retirada na loja (sem frete, com endereço e horário do restaurante)
+- Pagar agora pelo site (Pix ou cartão de crédito) ou na entrega/retirada (dinheiro com troco, débito, crédito, vale-refeição)
+- Validação do cartão no navegador (algoritmo de Luhn, bandeira, validade)
+- Dá para voltar à sacola, mudar itens e retomar da mesma etapa sem perder as escolhas
 
-## Como rodar em desenvolvimento
+**Conta e pedidos**
+- Cadastro e login com JWT; ao entrar, a pessoa volta para onde estava
+- Comprovante do pedido com número, itens, entrega, pagamento e valores
+- **Meus pedidos**: histórico e detalhe de cada pedido
+- Avaliação do pedido (nota e comentário), publicada nas avaliações do restaurante
+
+> O pagamento online é **simulado**: nenhum valor é cobrado e os dados do cartão não saem do navegador. O servidor recebe só a bandeira e os 4 últimos dígitos.
+
+## Telas
+
+| | |
+|---|---|
+| ![Lista de restaurantes](docs/screenshots/02-restaurantes.png) | ![Modal do item com opções](docs/screenshots/04-modal-item.png) |
+| **Restaurantes** com busca | **Modal do item** com opções e adicionais |
+| ![Sacola](docs/screenshots/05-sacola.png) | ![Checkout](docs/screenshots/06-checkout.png) |
+| **Sacola** com opções escolhidas | **Checkout**: etapa de pagamento |
+| ![Pedido realizado](docs/screenshots/07-pedido-realizado.png) | ![Meus pedidos](docs/screenshots/08-meus-pedidos.png) |
+| **Pedido realizado** (comprovante) | **Meus pedidos** com status da avaliação |
+
+<p align="center">
+  <img src="docs/screenshots/09-celular-item.png" alt="Modal do item no celular" width="280"><br>
+  <b>No celular</b>, o modal do item abre como gaveta, como no app do iFood
+</p>
+
+## Tecnologias
+
+| Camada | Tecnologias |
+|---|---|
+| Frontend | Angular 22 (standalone, signals, Signal Forms, `httpResource`, zoneless), TypeScript, CSS próprio, Font Awesome |
+| Backend | Node.js, Express 5, JWT (`jsonwebtoken`), senhas com `scrypt`, banco em arquivo JSON |
+| Testes | Vitest (unitários), `node:test` (API), Cypress (E2E) |
+| CI | GitHub Actions: build e as três camadas de testes a cada push e PR |
+
+## Como rodar
+
+**Pré-requisitos:** [Node.js](https://nodejs.org) 22.22+, 24.15+ ou 26+ e Git.
 
 ```bash
-npm install        # instala frontend e backend
-npm run api        # terminal 1: API em http://localhost:3000/api
-npm start          # terminal 2: app em http://localhost:4200
+git clone https://github.com/CristianAndrade23/MeatApp.git
+cd MeatApp
+npm install          # instala frontend e backend
 ```
 
-O `ng serve` encaminha as chamadas a `/api` para o backend (`proxy.conf.json`).
+**Modo desenvolvimento** (com recarga automática), em dois terminais:
 
-Usuários de teste (ou crie uma conta em **Criar conta**):
+```bash
+npm run api          # terminal 1: API em http://localhost:3000/api
+npm start            # terminal 2: app em http://localhost:4200
+```
+
+**Ou tudo com um comando só** (build de produção servido pela própria API):
+
+```bash
+npm run serve:prod   # app e API em http://localhost:3000
+```
+
+**Usuários de teste** (ou crie uma conta em *Criar conta*):
 
 | Email | Senha |
 |---|---|
-| juliana@gmail.com | juliana23 |
-| amanda@gmail.com | amanda21 |
+| `juliana@gmail.com` | `juliana23` |
+| `amanda@gmail.com` | `amanda21` |
+
+Os pedidos, contas criadas e avaliações ficam em `backend/data/db.json`, que é criado no primeiro uso e fica fora do git. Para recomeçar do zero, basta apagar esse arquivo.
 
 ## Testes
 
 ```bash
-npm test           # unitários do frontend (Vitest)
-npm run test:api   # backend (node:test)
-npm run e2e        # ponta a ponta com Cypress, sem interface
-npm run e2e:open   # Cypress interativo
+npm test             # unitários do frontend (Vitest)
+npm run test:api     # API (node:test)
+npm run e2e          # ponta a ponta com Cypress, sem interface
+npm run e2e:open     # Cypress interativo
 ```
 
-### Testes E2E (Cypress)
+| Camada | Quantidade | O que cobre |
+|---|---|---|
+| Unitários (Vitest) | 55 | Sacola, regras do checkout, cartão, formulários, interceptors, componentes |
+| API (`node:test`) | 44 | Endpoints, validações, cálculo de preços, autenticação e isolamento entre usuários |
+| E2E (Cypress) | 21 | Navegação, modal do item, sacola, checkout completo, cadastro, Meus pedidos e avaliação |
 
-Os testes em `cypress/e2e/` percorrem o app num navegador real: navegação e busca, modal do item
-com opções, sacola, checkout (entrega/retirada, cartão/dinheiro), login, cadastro, Meus pedidos e
-avaliações.
+`npm run e2e` não precisa da API rodando. Ele gera o build, sobe um servidor próprio na porta 4300 com banco temporário (restaurado antes de cada teste), roda o Cypress e desliga tudo no final.
 
-`npm run e2e` gera o build, sobe um servidor próprio na porta **4300** (`cypress/e2e-server.mts`)
-com banco em pasta temporária e roda os testes. O banco volta ao estado inicial antes de cada
-teste, então não é preciso ter a API rodando e o `backend/data/db.json` não é alterado.
+<details>
+<summary>Detalhes dos testes E2E</summary>
 
-Comandos customizados em `cypress/support/commands.ts`: `cy.visitAs()` (entra logado pela API),
-`cy.addToBag()`, `cy.createOrder()`, `cy.choose()` e `cy.resetDb()`.
+- Specs em `cypress/e2e/`. Comandos customizados em `cypress/support/commands.ts`: `cy.visitAs()` (entra logado pela API), `cy.addToBag()`, `cy.createOrder()`, `cy.choose()` e `cy.resetDb()`.
+- `npm run docs:screenshots` regenera as imagens deste README com o próprio Cypress (`cypress/docs/screenshots.cy.ts`).
+- Os scripts iniciam o Cypress por `cypress/run-cypress.mjs`, que remove a variável `ELECTRON_RUN_AS_NODE` definida pelo terminal do VS Code. Sem isso, o Cypress falha com `bad option: --smoke-test`.
 
-> Os scripts iniciam o Cypress por `cypress/run-cypress.mjs`, que remove a variável
-> `ELECTRON_RUN_AS_NODE` definida pelo terminal do VS Code. Sem isso o Cypress falha com
-> `bad option: --smoke-test`.
+</details>
 
-## Produção
+## Destaques técnicos
 
-```bash
-npm run serve:prod
-```
+- **Estado com signals:** a sacola é um store de signals (`computed` para total e contagem, `effect` para salvar no `localStorage`); o rascunho do checkout fica num serviço para sobreviver à navegação.
+- **Signal Forms com regras condicionais:** o endereço só é obrigatório na entrega (`applyWhen`), os dados do cartão só no pagamento online com crédito, e o troco é validado contra o total do pedido.
+- **`httpResource`** para dados de leitura (restaurantes, cardápio, pedidos), com busca com debounce via `toObservable`/`toSignal`.
+- **O servidor não confia no cliente:** frete, preço dos adicionais e total são recalculados no backend a partir do cardápio. O pedido guarda uma cópia dos nomes e preços do momento da compra.
+- **Segurança:** senhas com `scrypt` e comparação em tempo constante; JWT com expiração; pedido de outro usuário responde 404, sem revelar que existe; `?to=` do login aceita só caminhos internos.
+- **Acessibilidade:** `<dialog>` nativo para modais (foco preso, Esc fecha), foco inicial na ação segura nas confirmações, labels e `aria-*` nos controles.
+- **Sem dependências desnecessárias:** CSS próprio no lugar de Bootstrap/jQuery, e o backend roda TypeScript direto no Node, sem etapa de build.
 
-Gera o build do Angular e sobe o Express servindo a API e o app na porta 3000.
-Em produção, defina `JWT_SECRET` (obrigatório com `NODE_ENV=production`) e, opcionalmente, `PORT` e `DB_FILE`.
-
-## Estrutura
+## Estrutura do projeto
 
 ```
 src/app/
-  core/               modelos, autenticação, interceptors HTTP, notificações
-  layout/             header e snackbar
+  core/               modelos, autenticação, interceptors HTTP, notificações, confirmação
+  layout/             header, snackbar e modal de confirmação
   pages/              home e 404
   restaurants/        lista de restaurantes
-  restaurant-detail/  detalhe, cardápio e avaliações
+  restaurant-detail/  detalhe, cardápio, modal do item e avaliações
   cart/               store da sacola (signals), página da sacola e sacola lateral
-  order/              checkout em etapas, resumo/comprovante, meus pedidos e avaliação
+  order/              checkout em etapas, comprovante, Meus pedidos e avaliação
   security/           login e cadastro
-  shared/             input com validação, radio e rating
+  shared/             dialog, input com validação, radio e rating
 backend/
   src/                servidor Express, autenticação e banco em arquivo JSON
-  data/seed.json      catálogo: restaurantes, cardápio, avaliações e usuários
-  data/db.json        pedidos, usuários cadastrados e avaliações novas (local, fora do git)
+  data/seed.json      catálogo: restaurantes, cardápio, avaliações e usuários de teste
   test/               testes da API
+cypress/
+  e2e/                testes E2E
+  e2e-server.mts      servidor dos testes (porta 4300, banco temporário)
+docs/screenshots/     imagens deste README
 ```
 
-Para cadastrar outro usuário, gere o hash da senha com
-`npm --prefix backend run hash-password -- <senha>` e adicione-o em `backend/data/seed.json`
-(reinicie a API para carregar).
+## API
 
-## Créditos
+Base: `/api`. Rotas marcadas com 🔒 exigem `Authorization: Bearer <token>`.
 
-Projeto original © 2017 COD3R, licença MIT. Imagens por [freepik.com](https://www.freepik.com).
+| Método | Rota | Descrição |
+|---|---|---|
+| `GET` | `/restaurants?q=` | Lista restaurantes, com busca opcional |
+| `GET` | `/restaurants/:id` | Detalhe do restaurante |
+| `GET` | `/restaurants/:id/menu` | Cardápio, com os grupos de opções de cada item |
+| `GET` | `/restaurants/:id/reviews` | Avaliações, mais recentes primeiro |
+| `POST` | `/login` | Login; devolve nome, email e token |
+| `POST` | `/users` | Cadastro; devolve a sessão |
+| `POST` | `/orders` 🔒 | Cria o pedido (valida itens, opções, entrega e pagamento; calcula os valores) |
+| `GET` | `/orders` 🔒 | Pedidos do usuário logado |
+| `GET` | `/orders/:id` 🔒 | Detalhe do pedido |
+| `POST` | `/orders/:id/review` 🔒 | Avalia o pedido (uma vez por pedido) |
+
+Em produção, defina a variável `JWT_SECRET` (obrigatória com `NODE_ENV=production`). Também são aceitas `PORT` e `DB_FILE`. Para cadastrar outro usuário de teste no seed, gere o hash com `npm --prefix backend run hash-password -- <senha>`.
+
+## História do projeto
+
+O Meat começou em 2019, durante o curso de Angular da [COD3R](https://www.cod3r.com.br), em Angular 4 com AdminLTE e `json-server`. Em 2026 foi reescrito do zero com Angular 22 e ganhou o que o curso não chegou a cobrir: backend próprio, login, checkout completo e testes.
+
+| | Versão 1 (2019) | Versão 2 (2026) |
+|---|---|---|
+| Frontend | Angular 4, NgModules, RxJS 5 | Angular 22, standalone, signals, Signal Forms, zoneless |
+| Estilo | AdminLTE 2 + Bootstrap 3 + jQuery | CSS próprio |
+| Backend | `json-server` | Express 5 + JWT |
+| Testes | Karma + Jasmine + Protractor (gerados, sem uso) | Vitest, `node:test` e Cypress, rodando no CI |
+
+A versão original está preservada na tag [`v1-angular4`](https://github.com/CristianAndrade23/MeatApp/tree/v1-angular4). A reescrita está documentada nos [pull requests](https://github.com/CristianAndrade23/MeatApp/pulls?q=is%3Apr+is%3Amerged).
+
+## Licença e créditos
+
+[MIT](LICENSE). Projeto original © 2017 COD3R; reescrita © 2026 Cristian Andrade.
+Imagens de restaurantes e comidas por [freepik.com](https://www.freepik.com).

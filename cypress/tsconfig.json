@@ -10,5 +10,5 @@
     "isolatedModules": true,
     "types": ["cypress"]
   },
-  "include": ["e2e/**/*.ts", "support/**/*.ts", "../cypress.config.ts"]
+  "include": ["e2e/**/*.ts", "docs/**/*.ts", "support/**/*.ts", "../cypress.config.ts"]
 }

@@ -47,6 +47,7 @@ __screenshots__/
 /cypress/screenshots
 /cypress/videos
 /cypress/downloads
+/cypress/screenshots-docs
 
 # System files
 .DS_Store
