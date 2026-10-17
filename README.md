@@ -202,5 +202,5 @@ A versão original está preservada na tag [`v1-angular4`](https://github.com/Cr
 
 ## Licença e créditos
 
-[MIT](LICENSE). Projeto original © 2017 COD3R; reescrita © 2026 Cristian Andrade.
+[MIT](LICENSE). © 2019–2026 Cristian Andrade.
 Imagens de restaurantes e comidas por [freepik.com](https://www.freepik.com).
