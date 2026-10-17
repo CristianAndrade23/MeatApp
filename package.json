@@ -1,7 +1,16 @@
 {
   "name": "meat",
   "version": "2.0.0",
+  "description": "App de delivery de comida em Angular 22 (standalone, signals, Signal Forms) com API em Express + JWT e testes unitários e E2E",
+  "author": "Cristian Andrade",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CristianAndrade23/MeatApp.git"
+  },
+  "engines": {
+    "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+  },
   "scripts": {
     "ng": "ng",
     "postinstall": "npm install --prefix backend --no-fund --no-audit",
@@ -16,6 +25,8 @@
     "e2e:serve": "node cypress/e2e-server.mts",
     "cy:run": "node cypress/run-cypress.mjs run",
     "cy:open": "node cypress/run-cypress.mjs open",
+    "docs:screenshots": "ng build && start-server-and-test e2e:serve http://localhost:4300/api/restaurants cy:docs",
+    "cy:docs": "node cypress/run-cypress.mjs run --spec cypress/docs/screenshots.cy.ts --config specPattern=cypress/docs/**/*.cy.ts,screenshotsFolder=cypress/screenshots-docs,retries=0",
     "serve:prod": "npm run build && npm --prefix backend start"
   },
   "private": true,

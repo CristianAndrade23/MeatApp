@@ -12,5 +12,16 @@ export default defineConfig({
     video: false,
     screenshotOnRunFailure: true,
     retries: { runMode: 1, openMode: 0 },
+    setupNodeEvents(on) {
+      // Janela maior que o viewport no modo headless: sem isso o Cypress reduz a página
+      // e as screenshots ganham barras de rolagem que não existem no app.
+      on('before:browser:launch', (browser, launchOptions) => {
+        if (browser.name === 'electron' && browser.isHeadless) {
+          launchOptions.preferences.width = 1600;
+          launchOptions.preferences.height = 1200;
+        }
+        return launchOptions;
+      });
+    },
   },
 });
