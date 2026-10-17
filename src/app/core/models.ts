@@ -46,6 +46,7 @@ export interface Review {
   rating: number;
   comments: string;
   restaurantId: string;
+  orderId?: string;
 }
 
 export interface User {
@@ -133,4 +134,9 @@ export interface Order extends Omit<OrderRequest, 'orderItems'> {
   total: number;
   userEmail: string;
   createdAt: string;
+  /** Avaliação feita pelo cliente (uma por pedido). */
+  review?: { rating: number; comments: string; createdAt: string };
 }
+
+/** Número curto do pedido para exibição, derivado do id. */
+export const orderNumber = (order: Pick<Order, 'id'>) => order.id.slice(0, 8).toUpperCase();

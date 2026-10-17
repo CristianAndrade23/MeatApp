@@ -15,4 +15,11 @@ export class OrderService {
       .post<Order>(`${API_URL}/orders`, order)
       .pipe(tap((created) => this.lastOrder.set(created)));
   }
+
+  /** Avalia o pedido; a avaliação é publicada nas avaliações do restaurante. */
+  review(orderId: string, rating: number, comments: string): Observable<Order> {
+    return this.http
+      .post<Order>(`${API_URL}/orders/${encodeURIComponent(orderId)}/review`, { rating, comments })
+      .pipe(tap((order) => this.lastOrder.update((last) => (last?.id === order.id ? order : last))));
+  }
 }

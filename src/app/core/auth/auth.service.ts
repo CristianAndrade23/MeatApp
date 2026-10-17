@@ -52,6 +52,13 @@ export class AuthService {
       .pipe(tap((user) => this._user.set(user)));
   }
 
+  /** Cria a conta; o backend já devolve a sessão, então o usuário entra logado. */
+  register(name: string, email: string, password: string): Observable<User> {
+    return this.http
+      .post<User>(`${API_URL}/users`, { name, email, password })
+      .pipe(tap((user) => this._user.set(user)));
+  }
+
   logout() {
     this._user.set(undefined);
   }

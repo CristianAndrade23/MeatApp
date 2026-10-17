@@ -1,38 +1,12 @@
-.summary {
-  margin-top: 2rem;
-  padding: 2.5rem 1.5rem;
+:host {
+  display: block;
 }
-
-.summary-header {
-  text-align: center;
-}
-
-.success-icon {
-  font-size: 3.5rem;
-  color: var(--success);
-}
-
-h1 {
-  margin: 1rem 0 0.5rem;
-}
-
-.order-meta {
-  color: var(--text-muted);
-  margin: 0;
-}
-
-.lead {
-  font-size: 1.2rem;
-}
-
-/* Comprovante */
 
 .receipt {
-  max-width: 36rem;
-  margin: 2rem auto;
   border: 1px solid var(--border);
   border-radius: 8px;
   overflow: hidden;
+  background: var(--surface);
 }
 
 dl {
@@ -174,32 +148,7 @@ small {
   font-weight: 600;
 }
 
-/* Avaliação */
-
-.summary-footer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-}
-
-.summary-footer p {
-  margin: 0;
-}
-
-.thanks {
-  font-weight: bold;
-}
-
-.summary-footer .btn {
-  margin-top: 0.5rem;
-}
-
 @media (max-width: 575px) {
-  .summary {
-    padding: 2rem 1rem;
-  }
-
   .details .row {
     flex-direction: column;
     gap: 0.25rem;

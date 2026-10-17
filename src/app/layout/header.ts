@@ -37,6 +37,11 @@ import { CartStore } from '../cart/cart.store';
               </a>
             </li>
             @if (auth.user(); as user) {
+              <li>
+                <a routerLink="/orders" routerLinkActive="active">
+                  <i class="fa-solid fa-receipt"></i> Meus pedidos
+                </a>
+              </li>
               <li class="user-name"><i class="fa-solid fa-user"></i> {{ user.name }}</li>
               <li>
                 <button type="button" class="link-button" (click)="logout()">

@@ -44,6 +44,8 @@ export interface Review {
   rating: number;
   comments: string;
   restaurantId: string;
+  /** Pedido que originou a avaliação (avaliações feitas pelo app). */
+  orderId?: string;
 }
 
 export interface User {
@@ -101,6 +103,8 @@ export interface Order {
   total: number;
   userEmail: string;
   createdAt: string;
+  /** Avaliação feita pelo cliente depois do pedido (uma por pedido). */
+  review?: { rating: number; comments: string; createdAt: string };
 }
 
 export interface Data {
@@ -111,38 +115,60 @@ export interface Data {
   orders: Order[];
 }
 
+/** O que o arquivo do banco guarda: só o que foi criado pelo uso do app. */
+interface SavedData {
+  orders?: Order[];
+  users?: User[];
+  reviews?: Review[];
+}
+
 /**
- * Banco em arquivo JSON. O catálogo (restaurantes, cardápio, avaliações, usuários) vem sempre do
- * seed; o arquivo do banco guarda só os pedidos. Escritas serializadas e atômicas (tmp + rename).
+ * Banco em arquivo JSON. O catálogo (restaurantes, cardápio, avaliações e usuários iniciais) vem
+ * sempre do seed; o arquivo do banco guarda pedidos, usuários cadastrados e avaliações novas.
+ * Escritas serializadas e atômicas (tmp + rename).
  */
 export class Db {
   private writing: Promise<void> = Promise.resolve();
   private readonly file: string;
+  private readonly seedUsers: number;
+  private readonly seedReviews: number;
   readonly data: Data;
 
-  private constructor(file: string, data: Data) {
+  private constructor(file: string, data: Data, seedUsers: number, seedReviews: number) {
     this.file = file;
     this.data = data;
+    this.seedUsers = seedUsers;
+    this.seedReviews = seedReviews;
   }
 
   static async open(file: string, seedFile: string): Promise<Db> {
     const seed = JSON.parse(await readFile(seedFile, 'utf8')) as Partial<Data>;
-    const saved = existsSync(file)
-      ? (JSON.parse(await readFile(file, 'utf8')) as Partial<Data>)
-      : {};
-    return new Db(file, {
-      restaurants: seed.restaurants ?? [],
-      menu: seed.menu ?? [],
-      reviews: seed.reviews ?? [],
-      users: seed.users ?? [],
-      orders: saved.orders ?? [],
-    });
+    const saved: SavedData = existsSync(file) ? JSON.parse(await readFile(file, 'utf8')) : {};
+    const seedUsers = seed.users ?? [];
+    const seedReviews = seed.reviews ?? [];
+    return new Db(
+      file,
+      {
+        restaurants: seed.restaurants ?? [],
+        menu: seed.menu ?? [],
+        reviews: [...seedReviews, ...(saved.reviews ?? [])],
+        users: [...seedUsers, ...(saved.users ?? [])],
+        orders: saved.orders ?? [],
+      },
+      seedUsers.length,
+      seedReviews.length,
+    );
   }
 
   save(): Promise<void> {
     this.writing = this.writing.then(async () => {
       const tmp = `${this.file}.tmp`;
-      await writeFile(tmp, JSON.stringify({ orders: this.data.orders }, null, 2) + '\n');
+      const saved: SavedData = {
+        orders: this.data.orders,
+        users: this.data.users.slice(this.seedUsers),
+        reviews: this.data.reviews.slice(this.seedReviews),
+      };
+      await writeFile(tmp, JSON.stringify(saved, null, 2) + '\n');
       await rename(tmp, this.file);
     });
     return this.writing;

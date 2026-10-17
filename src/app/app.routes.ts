@@ -37,9 +37,26 @@ export const routes: Routes = [
     title: 'Pedido realizado | Meat',
   },
   {
+    path: 'orders',
+    canMatch: [loggedInGuard],
+    loadComponent: () => import('./order/my-orders').then((m) => m.MyOrders),
+    title: 'Meus pedidos | Meat',
+  },
+  {
+    path: 'orders/:id',
+    canMatch: [loggedInGuard],
+    loadComponent: () => import('./order/order-detail').then((m) => m.OrderDetail),
+    title: 'Pedido | Meat',
+  },
+  {
     path: 'login',
     loadComponent: () => import('./security/login').then((m) => m.Login),
     title: 'Entrar | Meat',
+  },
+  {
+    path: 'register',
+    loadComponent: () => import('./security/register').then((m) => m.Register),
+    title: 'Criar conta | Meat',
   },
   { path: '**', component: NotFound, title: 'Página não encontrada | Meat' },
 ];

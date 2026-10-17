@@ -20,7 +20,8 @@ O código da versão original continua acessível pela tag [`v1-angular4`](../..
 - Sacola de compras com signals, persistida no `localStorage` (itens de um restaurante por vez),
   com página própria acessível pelo header e sem exigir login
 - Confirmações em modal próprio (sem `alert`/`confirm` do navegador)
-- Login com JWT; a finalização do pedido exige usuário logado (`canMatch`)
+- Cadastro de usuário (senha com hash `scrypt`) e login com JWT; a finalização do pedido e o
+  histórico exigem usuário logado (`canMatch`), voltando para onde a pessoa estava
 - Checkout em etapas (Entrega → Pagamento → Revisão) com Signal Forms:
   - entrega no endereço ou retirada na loja (sem frete, com endereço e horário do restaurante)
   - pagar agora pelo site (Pix ou cartão de crédito) ou na entrega/retirada
@@ -30,9 +31,11 @@ O código da versão original continua acessível pela tag [`v1-angular4`](../..
   - rascunho do checkout mantido em memória: dá para voltar à sacola, ajustar itens ou refazer o
     login e retomar da mesma etapa
 - Frete e total recalculados no servidor a partir dos preços do cardápio
-- Resumo do pedido com avaliação por estrelas
+- Resumo do pedido como comprovante (número, data, itens, entrega, pagamento e valores)
+- **Meus pedidos**: histórico do usuário e detalhe de cada pedido
+- Avaliação do pedido (nota e comentário, uma por pedido), publicada nas avaliações do restaurante
 - Notificações (snackbar), tratamento centralizado de erros HTTP e página 404
-- Lazy loading das rotas de sacola, pedido e login
+- Lazy loading das rotas de sacola, pedido, histórico, login e cadastro
 
 ## Requisitos
 
@@ -48,7 +51,7 @@ npm start          # terminal 2: app em http://localhost:4200
 
 O `ng serve` encaminha as chamadas a `/api` para o backend (`proxy.conf.json`).
 
-Usuários de teste:
+Usuários de teste (ou crie uma conta em **Criar conta**):
 
 | Email | Senha |
 |---|---|
@@ -81,13 +84,13 @@ src/app/
   restaurants/        lista de restaurantes
   restaurant-detail/  detalhe, cardápio e avaliações
   cart/               store da sacola (signals), página da sacola e sacola lateral
-  order/              checkout em etapas, rascunho, regras de pagamento e resumo
-  security/           login
+  order/              checkout em etapas, resumo/comprovante, meus pedidos e avaliação
+  security/           login e cadastro
   shared/             input com validação, radio e rating
 backend/
   src/                servidor Express, autenticação e banco em arquivo JSON
   data/seed.json      catálogo: restaurantes, cardápio, avaliações e usuários
-  data/db.json        pedidos (local, fora do git; criado no primeiro pedido)
+  data/db.json        pedidos, usuários cadastrados e avaliações novas (local, fora do git)
   test/               testes da API
 ```
 
