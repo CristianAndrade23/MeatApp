@@ -113,8 +113,19 @@ export interface OrderRequest {
   }[];
 }
 
-export interface Order extends OrderRequest {
+/** Item de um pedido criado: cópia de nomes e preços do momento da compra. */
+export interface OrderItem {
+  menuId: string;
+  name: string;
+  quantity: number;
+  options?: { groupId: string; optionId: string; name: string; price: number }[];
+  note?: string;
+  unitPrice: number;
+}
+
+export interface Order extends Omit<OrderRequest, 'orderItems'> {
   id: string;
+  orderItems: OrderItem[];
   restaurantId: string;
   payment: PaymentRequest & { status: 'PAID' | 'PENDING' };
   itemsValue: number;

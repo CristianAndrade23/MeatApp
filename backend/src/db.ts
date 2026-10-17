@@ -55,10 +55,14 @@ export interface User {
 export interface OrderItemOption {
   groupId: string;
   optionId: string;
+  name: string;
+  price: number;
 }
 
+/** Item do pedido com cópia de nomes e preços do momento da compra. */
 export interface OrderItem {
   menuId: string;
+  name: string;
   quantity: number;
   options?: OrderItemOption[];
   note?: string;

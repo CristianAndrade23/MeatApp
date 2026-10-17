@@ -138,6 +138,7 @@ function validateItems(
     const unitPrice = money(menuItem.price + options.value.extra);
     orderItems.push({
       menuId: menuItem.id,
+      name: menuItem.name,
       quantity,
       ...(options.value.selected.length ? { options: options.value.selected } : {}),
       ...(note ? { note } : {}),
@@ -171,7 +172,7 @@ function validateOptions(
     if (selected.some((s) => s.groupId === group.id && s.optionId === option.id)) {
       return { error: `Opção repetida para ${menuItem.name}.` };
     }
-    selected.push({ groupId: group.id, optionId: option.id });
+    selected.push({ groupId: group.id, optionId: option.id, name: option.name, price: option.price });
     extra += option.price;
   }
 

@@ -188,6 +188,13 @@ describe('pedidos', () => {
     assert.equal(order.orderItems[0]['unitPrice'], 25.5);
     assert.equal(order.itemsValue, 51);
     assert.equal(order.orderItems[0]['note'], 'sem cebola');
+    // Cópia de nomes e preços do momento da compra, para o pedido não depender do cardápio atual.
+    assert.equal(order.orderItems[0]['name'], 'Classic Burger');
+    assert.deepEqual(order.orderItems[0]['options'], [
+      { groupId: 'ponto-da-carne', optionId: 'ao-ponto', name: 'Ao ponto', price: 0 },
+      { groupId: 'adicionais', optionId: 'bacon', name: 'Bacon', price: 4 },
+      { groupId: 'adicionais', optionId: 'queijo-extra', name: 'Queijo extra', price: 3 },
+    ]);
   });
 
   for (const [caso, item] of [
