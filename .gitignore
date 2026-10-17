@@ -43,6 +43,11 @@ testem.log
 /typings
 __screenshots__/
 
+# Cypress (artefatos gerados pelos testes E2E)
+/cypress/screenshots
+/cypress/videos
+/cypress/downloads
+
 # System files
 .DS_Store
 Thumbs.db

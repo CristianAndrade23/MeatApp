@@ -11,6 +11,11 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:api": "npm --prefix backend test",
+    "e2e": "ng build && start-server-and-test e2e:serve http://localhost:4300/api/restaurants cy:run",
+    "e2e:open": "ng build && start-server-and-test e2e:serve http://localhost:4300/api/restaurants cy:open",
+    "e2e:serve": "node cypress/e2e-server.mts",
+    "cy:run": "node cypress/run-cypress.mjs run",
+    "cy:open": "node cypress/run-cypress.mjs open",
     "serve:prod": "npm run build && npm --prefix backend start"
   },
   "private": true,
@@ -30,8 +35,10 @@
     "@angular/build": "^22.2.3",
     "@angular/cli": "^22.2.3",
     "@angular/compiler-cli": "^22.2.0",
+    "cypress": "^16.2.0",
     "jsdom": "^30.0.0",
     "prettier": "^3.8.1",
+    "start-server-and-test": "^3.0.13",
     "typescript": "~6.0.2",
     "vitest": "^5.0.0"
   }

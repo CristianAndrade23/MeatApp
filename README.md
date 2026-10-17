@@ -61,9 +61,28 @@ Usuários de teste (ou crie uma conta em **Criar conta**):
 ## Testes
 
 ```bash
-npm test           # frontend (Vitest)
+npm test           # unitários do frontend (Vitest)
 npm run test:api   # backend (node:test)
+npm run e2e        # ponta a ponta com Cypress, sem interface
+npm run e2e:open   # Cypress interativo
 ```
+
+### Testes E2E (Cypress)
+
+Os testes em `cypress/e2e/` percorrem o app num navegador real: navegação e busca, modal do item
+com opções, sacola, checkout (entrega/retirada, cartão/dinheiro), login, cadastro, Meus pedidos e
+avaliações.
+
+`npm run e2e` gera o build, sobe um servidor próprio na porta **4300** (`cypress/e2e-server.mts`)
+com banco em pasta temporária e roda os testes. O banco volta ao estado inicial antes de cada
+teste, então não é preciso ter a API rodando e o `backend/data/db.json` não é alterado.
+
+Comandos customizados em `cypress/support/commands.ts`: `cy.visitAs()` (entra logado pela API),
+`cy.addToBag()`, `cy.createOrder()`, `cy.choose()` e `cy.resetDb()`.
+
+> Os scripts iniciam o Cypress por `cypress/run-cypress.mjs`, que remove a variável
+> `ELECTRON_RUN_AS_NODE` definida pelo terminal do VS Code. Sem isso o Cypress falha com
+> `bad option: --smoke-test`.
 
 ## Produção
 
