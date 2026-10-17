@@ -1,14 +1,15 @@
 import { Component, inject, input, signal } from '@angular/core';
 import { email, form, FormField, FormRoot, required } from '@angular/forms/signals';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../core/auth/auth.service';
+import { safeReturnUrl } from '../core/auth/return-url';
 import { NotificationService } from '../core/notification.service';
 import { InputContainer } from '../shared/input-container';
 
 @Component({
   selector: 'mt-login',
-  imports: [FormRoot, FormField, InputContainer],
+  imports: [FormRoot, FormField, InputContainer, RouterLink],
   template: `
     <section class="box login">
       <h1 class="box-title"><i class="fa-solid fa-right-to-bracket"></i> Entrar</h1>
@@ -32,6 +33,11 @@ import { InputContainer } from '../shared/input-container';
           }
         </button>
       </form>
+
+      <p class="switch">
+        Não tem conta?
+        <a routerLink="/register" [queryParams]="to() ? { to: to() } : {}">Criar conta</a>
+      </p>
     </section>
   `,
   styles: `
@@ -43,6 +49,12 @@ import { InputContainer } from '../shared/input-container';
     .btn-block {
       width: 100%;
       margin-top: 0.5rem;
+    }
+    .switch {
+      text-align: center;
+      margin: 1.5rem 0 0;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
     }
   `,
 })
@@ -81,12 +93,6 @@ export class Login {
     } catch {
       return; // mensagem exibida pelo errorInterceptor
     }
-    await this.router.navigateByUrl(this.safeReturnUrl());
-  }
-
-  /** Aceita só caminhos internos, para o `?to=` não virar um redirecionamento aberto. */
-  private safeReturnUrl() {
-    const to = this.to();
-    return to && to.startsWith('/') && !to.startsWith('//') ? to : '/';
+    await this.router.navigateByUrl(safeReturnUrl(this.to()));
   }
 }
