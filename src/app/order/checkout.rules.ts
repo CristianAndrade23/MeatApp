@@ -1,3 +1,4 @@
+import { PAYMENT_METHODS } from '../core/backend/rules';
 import { DeliveryType, PaymentMethod, PaymentTiming } from '../core/models';
 
 export interface ChoiceOption<T extends string = string> {
@@ -56,11 +57,8 @@ const METHOD_ICONS: Record<PaymentMethod, string> = {
   MEAL_VOUCHER: 'fa-solid fa-utensils',
 };
 
-/** Formas de pagamento aceitas em cada momento (mesma regra do backend). */
-export const PAYMENT_METHODS: Record<PaymentTiming, PaymentMethod[]> = {
-  ONLINE: ['PIX', 'CREDIT'],
-  ON_DELIVERY: ['CASH', 'DEBIT', 'CREDIT', 'MEAL_VOUCHER'],
-};
+/** Formas de pagamento aceitas em cada momento: a regra vem do módulo compartilhado com a API. */
+export { PAYMENT_METHODS };
 
 export function methodOptions(timing: PaymentTiming | ''): ChoiceOption<PaymentMethod>[] {
   return timing

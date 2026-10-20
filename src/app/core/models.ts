@@ -1,7 +1,7 @@
 export const API_URL = '/api';
 
-/** Taxa de entrega fixa; o backend usa o mesmo valor para calcular o total do pedido. */
-export const DELIVERY_FEE = 8;
+/** Taxa de entrega fixa, a mesma usada pela API para calcular o total do pedido. */
+export { DELIVERY_FEE } from './backend/rules';
 
 export interface Restaurant {
   id: string;
