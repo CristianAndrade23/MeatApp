@@ -2,12 +2,13 @@ import { DatePipe } from '@angular/common';
 import { Component, inject, input, output, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
+import { MAX_REVIEW_LENGTH } from '../core/backend/rules';
 import { Order } from '../core/models';
 import { NotificationService } from '../core/notification.service';
 import { Rating } from '../shared/rating';
 import { OrderService } from './order.service';
 
-export const MAX_REVIEW_LENGTH = 500;
+export { MAX_REVIEW_LENGTH };
 
 /** Avaliação do pedido: publicada nas avaliações do restaurante (uma por pedido). */
 @Component({

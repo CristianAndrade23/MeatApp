@@ -1,9 +1,10 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, computed, ElementRef, inject, input, output, signal } from '@angular/core';
 import { CartEntry } from '../cart/cart.store';
+import { MAX_NOTE_LENGTH } from '../core/backend/rules';
 import { MenuItem, MenuOption, MenuOptionGroup, SelectedOption } from '../core/models';
 
-export const MAX_NOTE_LENGTH = 140;
+export { MAX_NOTE_LENGTH };
 
 /** Texto da regra do grupo, como no iFood: "Escolha 1 opção", "Escolha até 3 opções"... */
 export function groupRule(group: MenuOptionGroup): string {
