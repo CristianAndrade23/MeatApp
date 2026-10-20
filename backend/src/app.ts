@@ -1,29 +1,27 @@
 import { randomUUID } from 'node:crypto';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import express, { type Request, type Response } from 'express';
+import express, { type NextFunction, type Request, type Response } from 'express';
+import {
+  ApiError,
+  createOrder,
+  findOwnOrder,
+  findRestaurant,
+  restaurantMenu,
+  restaurantReviews,
+  reviewOrder,
+  searchRestaurants,
+  userOrders,
+} from '../../src/app/core/backend/rules.ts';
 import { type AuthenticatedRequest, loginHandler, registerHandler, requireAuth } from './auth.ts';
-import type {
-  Db,
-  DeliveryAddress,
-  DeliveryType,
-  MenuItem,
-  Order,
-  OrderItem,
-  OrderItemOption,
-  Payment,
-  PaymentMethod,
-  PaymentTiming,
-} from './db.ts';
+import type { Db } from './db.ts';
 
-export const DELIVERY_FEE = 8;
-export const MAX_REVIEW_LENGTH = 500;
-
-/** Formas de pagamento aceitas em cada momento. */
-export const PAYMENT_METHODS: Record<PaymentTiming, PaymentMethod[]> = {
-  ONLINE: ['PIX', 'CREDIT'],
-  ON_DELIVERY: ['CASH', 'DEBIT', 'CREDIT', 'MEAL_VOUCHER'],
-};
+export {
+  DELIVERY_FEE,
+  MAX_NOTE_LENGTH,
+  MAX_REVIEW_LENGTH,
+  PAYMENT_METHODS,
+} from '../../src/app/core/backend/rules.ts';
 
 export interface AppOptions {
   db: Db;
@@ -32,135 +30,69 @@ export interface AppOptions {
   staticDir?: string;
 }
 
+/**
+ * API do MeatApp. As regras de negócio vêm de `src/app/core/backend/rules.ts`, o mesmo módulo
+ * usado pelo modo demo do frontend; aqui ficam só HTTP, JWT e persistência em arquivo.
+ */
 export function createApp({ db, jwtSecret, staticDir }: AppOptions) {
   const app = express();
   const api = express.Router();
+  const auth = requireAuth(jwtSecret);
 
   app.disable('x-powered-by');
   api.use(express.json({ limit: '100kb' }));
 
   api.get('/restaurants', (req: Request, res: Response) => {
-    const q = typeof req.query['q'] === 'string' ? req.query['q'].trim().toLowerCase() : '';
-    const restaurants = q
-      ? db.data.restaurants.filter((r) =>
-          [r.name, r.category, r.about ?? ''].some((field) => field.toLowerCase().includes(q)),
-        )
-      : db.data.restaurants;
-    res.json(restaurants);
+    const q = typeof req.query['q'] === 'string' ? req.query['q'] : '';
+    res.json(searchRestaurants(db.data, q));
   });
 
   api.get('/restaurants/:id', (req: Request, res: Response) => {
-    const restaurant = db.data.restaurants.find((r) => r.id === req.params['id']);
-    if (!restaurant) {
-      res.status(404).json({ message: 'Restaurante não encontrado.' });
-      return;
-    }
-    res.json(restaurant);
+    res.json(findRestaurant(db.data, req.params['id'] as string));
   });
 
   api.get('/restaurants/:id/menu', (req: Request, res: Response) => {
-    res.json(db.data.menu.filter((m) => m.restaurantId === req.params['id']));
+    res.json(restaurantMenu(db.data, req.params['id'] as string));
   });
 
   api.get('/restaurants/:id/reviews', (req: Request, res: Response) => {
-    // Mais recentes primeiro, para a avaliação feita agora aparecer no topo.
-    const reviews = db.data.reviews
-      .filter((r) => r.restaurantId === req.params['id'])
-      .sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
-    res.json(reviews);
+    res.json(restaurantReviews(db.data, req.params['id'] as string));
   });
 
   api.post('/login', loginHandler(db, jwtSecret));
   api.post('/users', registerHandler(db, jwtSecret));
 
-  /** Pedidos do usuário logado, mais recentes primeiro. */
-  api.get('/orders', requireAuth(jwtSecret), (req: AuthenticatedRequest, res: Response) => {
-    const orders = db.data.orders
-      .filter((o) => o.userEmail === req.user!.email)
-      .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
-    res.json(orders);
+  api.get('/orders', auth, (req: AuthenticatedRequest, res: Response) => {
+    res.json(userOrders(db.data, req.user!));
   });
 
-  api.get('/orders/:id', requireAuth(jwtSecret), (req: AuthenticatedRequest, res: Response) => {
-    const order = findOwnOrder(req);
-    if (!order) {
-      res.status(404).json({ message: 'Pedido não encontrado.' });
-      return;
-    }
-    res.json(order);
+  api.get('/orders/:id', auth, (req: AuthenticatedRequest, res: Response) => {
+    res.json(findOwnOrder(db.data, req.user!, req.params['id'] as string));
   });
 
-  /** Avaliação do pedido: publicada nas avaliações do restaurante. Uma por pedido. */
-  api.post(
-    '/orders/:id/review',
-    requireAuth(jwtSecret),
-    async (req: AuthenticatedRequest, res: Response) => {
-      const order = findOwnOrder(req);
-      if (!order) {
-        res.status(404).json({ message: 'Pedido não encontrado.' });
-        return;
-      }
-      if (order.review) {
-        res.status(409).json({ message: 'Este pedido já foi avaliado.' });
-        return;
-      }
+  api.post('/orders/:id/review', auth, async (req: AuthenticatedRequest, res: Response) => {
+    const order = reviewOrder(db.data, req.user!, req.params['id'] as string, req.body);
+    await db.save();
+    res.status(201).json(order);
+  });
 
-      const body = asRecord(req.body);
-      const rating = body['rating'];
-      const comments = text(body['comments']);
-      if (typeof rating !== 'number' || !Number.isInteger(rating) || rating < 1 || rating > 5) {
-        res.status(400).json({ message: 'A nota deve ser de 1 a 5.' });
-        return;
-      }
-      if (typeof body['comments'] !== 'undefined' && typeof body['comments'] !== 'string') {
-        res.status(400).json({ message: 'Comentário inválido.' });
-        return;
-      }
-      if (comments.length > MAX_REVIEW_LENGTH) {
-        res.status(400).json({ message: 'Comentário muito longo.' });
-        return;
-      }
-
-      const createdAt = new Date().toISOString();
-      order.review = { rating, comments, createdAt };
-      db.data.reviews.push({
-        name: req.user!.name,
-        date: createdAt,
-        rating,
-        comments,
-        restaurantId: order.restaurantId,
-        orderId: order.id,
-      });
-      await db.save();
-      res.status(201).json(order);
-    },
-  );
-
-  function findOwnOrder(req: AuthenticatedRequest): Order | undefined {
-    // Pedido de outro usuário responde 404, sem revelar que ele existe.
-    return db.data.orders.find((o) => o.id === req.params['id'] && o.userEmail === req.user!.email);
-  }
-
-  api.post('/orders', requireAuth(jwtSecret), async (req: AuthenticatedRequest, res: Response) => {
-    const result = validateOrder(db, req.body);
-    if ('error' in result) {
-      res.status(400).json({ message: result.error });
-      return;
-    }
-
-    const order: Order = {
-      id: randomUUID(),
-      ...result.order,
-      userEmail: req.user!.email,
-      createdAt: new Date().toISOString(),
-    };
-    db.data.orders.push(order);
+  api.post('/orders', auth, async (req: AuthenticatedRequest, res: Response) => {
+    const order = createOrder(db.data, req.user!, req.body, randomUUID());
     await db.save();
     res.status(201).json(order);
   });
 
   api.use((_req: Request, res: Response) => {
     res.status(404).json({ message: 'Recurso não encontrado.' });
+  });
+
+  // Erros de regra de negócio viram a resposta HTTP correspondente.
+  api.use((err: unknown, _req: Request, res: Response, next: NextFunction) => {
+    if (err instanceof ApiError) {
+      res.status(err.status).json({ message: err.message });
+      return;
+    }
+    next(err);
   });
 
   app.use('/api', api);
@@ -173,166 +105,4 @@ export function createApp({ db, jwtSecret, staticDir }: AppOptions) {
   }
 
   return app;
-}
-
-type NewOrder = Omit<Order, 'id' | 'userEmail' | 'createdAt'>;
-type Result<T> = { value: T } | { error: string };
-
-const text = (v: unknown) => (typeof v === 'string' ? v.trim() : '');
-const asRecord = (v: unknown) =>
-  (typeof v === 'object' && v !== null ? v : {}) as Record<string, unknown>;
-const money = (v: number) => Math.round(v * 100) / 100;
-
-function validateItems(
-  db: Db,
-  raw: unknown,
-): Result<{ orderItems: OrderItem[]; itemsValue: number; restaurantId: string }> {
-  if (!Array.isArray(raw) || raw.length === 0) return { error: 'O pedido não possui itens.' };
-
-  const orderItems: OrderItem[] = [];
-  const restaurants = new Set<string>();
-  let itemsValue = 0;
-  for (const item of raw.map(asRecord)) {
-    const menuItem = db.data.menu.find((m) => m.id === item['menuId']);
-    const quantity = item['quantity'];
-    if (!menuItem) return { error: 'Item do pedido inválido.' };
-    if (typeof quantity !== 'number' || !Number.isInteger(quantity) || quantity < 1 || quantity > 99) {
-      return { error: 'Quantidade inválida.' };
-    }
-
-    const options = validateOptions(menuItem, item['options']);
-    if ('error' in options) return options;
-
-    const note = item['note'] === undefined ? '' : text(item['note']);
-    if (typeof item['note'] !== 'undefined' && typeof item['note'] !== 'string') {
-      return { error: 'Observação inválida.' };
-    }
-    if (note.length > MAX_NOTE_LENGTH) return { error: 'Observação muito longa.' };
-
-    const unitPrice = money(menuItem.price + options.value.extra);
-    orderItems.push({
-      menuId: menuItem.id,
-      name: menuItem.name,
-      quantity,
-      ...(options.value.selected.length ? { options: options.value.selected } : {}),
-      ...(note ? { note } : {}),
-      unitPrice,
-    });
-    restaurants.add(menuItem.restaurantId);
-    itemsValue += unitPrice * quantity;
-  }
-  if (restaurants.size > 1) return { error: 'Todos os itens devem ser do mesmo restaurante.' };
-
-  return { value: { orderItems, itemsValue: money(itemsValue), restaurantId: [...restaurants][0] } };
-}
-
-export const MAX_NOTE_LENGTH = 140;
-
-/** Confere as opções escolhidas contra os grupos do item (existência, mínimo e máximo). */
-function validateOptions(
-  menuItem: MenuItem,
-  raw: unknown,
-): Result<{ selected: OrderItemOption[]; extra: number }> {
-  if (raw !== undefined && !Array.isArray(raw)) return { error: 'Opções inválidas.' };
-  const chosen = (raw ?? []).map(asRecord);
-  const groups = menuItem.options ?? [];
-
-  const selected: OrderItemOption[] = [];
-  let extra = 0;
-  for (const c of chosen) {
-    const group = groups.find((g) => g.id === c['groupId']);
-    const option = group?.options.find((o) => o.id === c['optionId']);
-    if (!group || !option) return { error: `Opção inválida para ${menuItem.name}.` };
-    if (selected.some((s) => s.groupId === group.id && s.optionId === option.id)) {
-      return { error: `Opção repetida para ${menuItem.name}.` };
-    }
-    selected.push({ groupId: group.id, optionId: option.id, name: option.name, price: option.price });
-    extra += option.price;
-  }
-
-  for (const group of groups) {
-    const count = selected.filter((s) => s.groupId === group.id).length;
-    if (count < group.min) return { error: `Escolha ${group.name.toLowerCase()} para ${menuItem.name}.` };
-    if (count > group.max) return { error: `Opções demais em ${group.name.toLowerCase()} (${menuItem.name}).` };
-  }
-
-  return { value: { selected, extra } };
-}
-
-function validateAddress(raw: unknown): Result<DeliveryAddress> {
-  const a = asRecord(raw);
-  const street = text(a['street']);
-  const number = text(a['number']);
-  const complement = text(a['complement']);
-  if (street.length < 5) return { error: 'Endereço inválido.' };
-  if (!/^[0-9]+$/.test(number)) return { error: 'Número inválido.' };
-  return { value: { street, number, ...(complement ? { complement } : {}) } };
-}
-
-function validatePayment(raw: unknown, total: number): Result<Payment> {
-  const p = asRecord(raw);
-  const timing = text(p['timing']) as PaymentTiming;
-  const method = text(p['method']) as PaymentMethod;
-  if (!(timing in PAYMENT_METHODS)) return { error: 'Momento de pagamento inválido.' };
-  if (!PAYMENT_METHODS[timing].includes(method)) return { error: 'Forma de pagamento inválida.' };
-
-  const payment: Payment = { timing, method, status: timing === 'ONLINE' ? 'PAID' : 'PENDING' };
-
-  if (method === 'CASH' && p['changeFor'] !== undefined) {
-    const changeFor = p['changeFor'];
-    if (typeof changeFor !== 'number' || !Number.isFinite(changeFor) || changeFor < total) {
-      return { error: 'O valor para troco deve ser maior ou igual ao total.' };
-    }
-    payment.changeFor = money(changeFor);
-  }
-
-  // Pagamento online simulado: o cliente envia só bandeira e 4 últimos dígitos, nunca o cartão.
-  if (timing === 'ONLINE' && method === 'CREDIT') {
-    const card = asRecord(p['card']);
-    const brand = text(card['brand']);
-    const last4 = text(card['last4']);
-    if (!brand || !/^[0-9]{4}$/.test(last4)) return { error: 'Dados do cartão inválidos.' };
-    payment.card = { brand, last4 };
-  }
-
-  return { value: payment };
-}
-
-function validateOrder(db: Db, body: unknown): { order: NewOrder } | { error: string } {
-  const b = asRecord(body);
-
-  const items = validateItems(db, b['orderItems']);
-  if ('error' in items) return items;
-
-  const deliveryType = text(b['deliveryType']) as DeliveryType;
-  if (deliveryType !== 'DELIVERY' && deliveryType !== 'PICKUP') {
-    return { error: 'Tipo de entrega inválido.' };
-  }
-
-  let address: DeliveryAddress | undefined;
-  if (deliveryType === 'DELIVERY') {
-    const result = validateAddress(b['address']);
-    if ('error' in result) return result;
-    address = result.value;
-  }
-
-  // Valores calculados no servidor a partir dos preços do cardápio, nunca a partir do cliente.
-  const deliveryFee = deliveryType === 'DELIVERY' ? DELIVERY_FEE : 0;
-  const total = money(items.value.itemsValue + deliveryFee);
-
-  const payment = validatePayment(b['payment'], total);
-  if ('error' in payment) return payment;
-
-  return {
-    order: {
-      restaurantId: items.value.restaurantId,
-      deliveryType,
-      ...(address ? { address } : {}),
-      payment: payment.value,
-      orderItems: items.value.orderItems,
-      itemsValue: items.value.itemsValue,
-      deliveryFee,
-      total,
-    },
-  };
 }
