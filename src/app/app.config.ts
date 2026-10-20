@@ -14,6 +14,8 @@ import {
   withRouterConfig,
 } from '@angular/router';
 import { routes } from './app.routes';
+import { environment } from '../environments/environment';
+import { demoApiInterceptor } from './core/demo/demo-api.interceptor';
 import { authInterceptor, errorInterceptor } from './core/http.interceptors';
 
 registerLocaleData(localePt);
@@ -29,7 +31,15 @@ export const appConfig: ApplicationConfig = {
       withRouterConfig({ paramsInheritanceStrategy: 'always' }),
       withInMemoryScrolling({ scrollPositionRestoration: 'top' }),
     ),
-    provideHttpClient(withFetch(), withInterceptors([authInterceptor, errorInterceptor])),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([
+        authInterceptor,
+        errorInterceptor,
+        // No modo demo, a API responde dentro do navegador (último da cadeia, no lugar da rede).
+        ...(environment.demoApi ? [demoApiInterceptor] : []),
+      ]),
+    ),
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     { provide: DEFAULT_CURRENCY_CODE, useValue: 'BRL' },
   ],

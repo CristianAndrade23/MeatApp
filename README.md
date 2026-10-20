@@ -11,6 +11,10 @@ Aplicação de pedidos de comida, inspirada no iFood: restaurantes e cardápio, 
 
 Frontend em **Angular 22** (componentes standalone, signals, Signal Forms, zoneless) e API em **Express 5 + JWT**, cobertos por testes unitários, de API e **E2E com Cypress**.
 
+**[Abrir a demo](https://cristianandrade23.github.io/MeatApp/)** · entre com `juliana@gmail.com` / `juliana23` ou crie uma conta
+
+A demo roda no GitHub Pages com a API dentro do navegador, usando as **mesmas regras de negócio** do backend Express. Abre na hora, sem servidor para "acordar", e os pedidos ficam salvos no seu navegador.
+
 ![Cardápio com a sacola](docs/screenshots/03-cardapio.png)
 
 ## Sumário
@@ -75,7 +79,7 @@ Frontend em **Angular 22** (componentes standalone, signals, Signal Forms, zonel
 | Frontend | Angular 22 (standalone, signals, Signal Forms, `httpResource`, zoneless), TypeScript, CSS próprio, Font Awesome |
 | Backend | Node.js, Express 5, JWT (`jsonwebtoken`), senhas com `scrypt`, banco em arquivo JSON |
 | Testes | Vitest (unitários), `node:test` (API), Cypress (E2E) |
-| CI | GitHub Actions: build e as três camadas de testes a cada push e PR |
+| CI/CD | GitHub Actions: build e as três camadas de testes a cada push e PR; deploy da demo no GitHub Pages |
 
 ## Como rodar
 
@@ -100,6 +104,12 @@ npm start            # terminal 2: app em http://localhost:4200
 npm run serve:prod   # app e API em http://localhost:3000
 ```
 
+**Sem backend** (a API roda no navegador, como na demo publicada):
+
+```bash
+npm run start:demo   # app em http://localhost:4200
+```
+
 **Usuários de teste** (ou crie uma conta em *Criar conta*):
 
 | Email | Senha |
@@ -120,7 +130,7 @@ npm run e2e:open     # Cypress interativo
 
 | Camada | Quantidade | O que cobre |
 |---|---|---|
-| Unitários (Vitest) | 55 | Sacola, regras do checkout, cartão, formulários, interceptors, componentes |
+| Unitários (Vitest) | 61 | Sacola, regras do checkout, cartão, formulários, interceptors, componentes e a API do modo demo |
 | API (`node:test`) | 44 | Endpoints, validações, cálculo de preços, autenticação e isolamento entre usuários |
 | E2E (Cypress) | 21 | Navegação, modal do item, sacola, checkout completo, cadastro, Meus pedidos e avaliação |
 
@@ -141,6 +151,7 @@ npm run e2e:open     # Cypress interativo
 - **Signal Forms com regras condicionais:** o endereço só é obrigatório na entrega (`applyWhen`), os dados do cartão só no pagamento online com crédito, e o troco é validado contra o total do pedido.
 - **`httpResource`** para dados de leitura (restaurantes, cardápio, pedidos), com busca com debounce via `toObservable`/`toSignal`.
 - **O servidor não confia no cliente:** frete, preço dos adicionais e total são recalculados no backend a partir do cardápio. O pedido guarda uma cópia dos nomes e preços do momento da compra.
+- **Uma regra de negócio, dois ambientes:** validações e cálculos da API ficam em [`src/app/core/backend/rules.ts`](src/app/core/backend/rules.ts), TypeScript puro usado pelo Express e pela API do modo demo (um `HttpInterceptorFn` carregado sob demanda, que nem entra no build normal). Por isso a demo e o servidor não divergem.
 - **Segurança:** senhas com `scrypt` e comparação em tempo constante; JWT com expiração; pedido de outro usuário responde 404, sem revelar que existe; `?to=` do login aceita só caminhos internos.
 - **Acessibilidade:** `<dialog>` nativo para modais (foco preso, Esc fecha), foco inicial na ação segura nas confirmações, labels e `aria-*` nos controles.
 - **Sem dependências desnecessárias:** CSS próprio no lugar de Bootstrap/jQuery, e o backend roda TypeScript direto no Node, sem etapa de build.
@@ -150,6 +161,8 @@ npm run e2e:open     # Cypress interativo
 ```
 src/app/
   core/               modelos, autenticação, interceptors HTTP, notificações, confirmação
+    backend/          regras de negócio da API (compartilhadas com o Express)
+    demo/             API do modo demo, que roda no navegador (GitHub Pages)
   layout/             header, snackbar e modal de confirmação
   pages/              home e 404
   restaurants/        lista de restaurantes
@@ -159,7 +172,7 @@ src/app/
   security/           login e cadastro
   shared/             dialog, input com validação, radio e rating
 backend/
-  src/                servidor Express, autenticação e banco em arquivo JSON
+  src/                servidor Express (HTTP, JWT e banco em arquivo JSON)
   data/seed.json      catálogo: restaurantes, cardápio, avaliações e usuários de teste
   test/               testes da API
 cypress/
